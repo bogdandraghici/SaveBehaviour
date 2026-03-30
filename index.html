@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Connections - support-mailbox</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #F1F3F6;
+      min-height: 100vh;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background: #2A313A;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      position: relative;
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      padding: 0 2px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 24px;
+      width: auto;
+    }
+
+    .project-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .project-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .project-icon img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .project-name {
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.57;
+      color: #FFFFFF;
+    }
+
+    .branch-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0F1114;
+      border-radius: 8px;
+      padding: 4px 8px;
+    }
+
+    .branch-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .branch-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 100px;
+      background: #002D5B;
+      border: 1px dashed #3389E0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .tag-main {
+      background: rgba(0, 59, 119, 0.3);
+      border: 1px solid #3389E0;
+      color: #FFFFFF;
+    }
+
+    .tag-draft {
+      border: 1px dashed #E66119;
+      color: #FD8949;
+    }
+
+    .new-version-text {
+      font-size: 12px;
+      color: #FFFFFF;
+      opacity: 0.8;
+      width: 75px;
+    }
+
+    .branch-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn-dark {
+      width: 24px;
+      height: 24px;
+      background: #2A313A;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .icon-btn-dark img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #2A313A;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 4px;
+      padding: 4px 8px;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      height: 24px;
+    }
+
+    .submit-btn img {
+      width: 12px;
+      height: 12px;
+    }
+
+    .segmented-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #191D23;
+      border-radius: 8px;
+      padding: 4px;
+      height: 32px;
+    }
+
+    .segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      height: 100%;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #FFFFFF;
+      cursor: pointer;
+    }
+
+    .segment.active {
+      background: #006BD8;
+      font-weight: 600;
+      box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.12), 0px 2px 8px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    .segment:not(.active) {
+      padding: 0 8px;
+      border-radius: 6px;
+    }
+
+    /* ── Resource Sub-Header ── */
+    .resource-subheader {
+      background: #475263;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 4px 0 4px 80px;
+    }
+
+    .resource-subheader-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex: 1;
+      padding-right: 16px;
+    }
+
+    .breadcrumb-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border: 1px solid rgba(166, 176, 190, 0.3);
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .back-btn img {
+      width: 12px;
+      height: 12px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .breadcrumb-dim {
+      color: #FFFFFF;
+      opacity: 0.7;
+    }
+
+    .breadcrumb-sep {
+      color: #FFFFFF;
+      opacity: 0.5;
+    }
+
+    .breadcrumb-bold {
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    .dots-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border: 1px solid rgba(166, 176, 190, 0.3);
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .dots-btn img {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ── Page Content ── */
+    .page-content {
+      padding: 24px;
+      padding-bottom: 120px;
+    }
+
+    /* ── Resource Header Card ── */
+    .resource-header-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 2px 2px 24px 0px rgba(22, 52, 98, 0.08);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .resource-title {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #000000;
+    }
+
+    .resource-desc {
+      font-size: 14px;
+      line-height: 1.71;
+      color: #0F1114;
+    }
+
+    /* ── Main Content Card ── */
+    .main-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 2px 2px 24px 0px rgba(22, 52, 98, 0.08);
+      padding-bottom: 32px;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      align-items: center;
+      padding: 8px 24px 0px;
+      border-bottom: 1px solid #E3E8ED;
+    }
+
+    .tab {
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: #64748B;
+    }
+
+    .tab.active {
+      color: #006BD8;
+      border-bottom-color: #006BD8;
+    }
+
+    /* ── Form Content ── */
+    .form-content {
+      padding: 24px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0F1114;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #E3E8ED;
+    }
+
+    .section-title .info-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.6;
+    }
+
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Form Fields ── */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 260px;
+    }
+
+    .field-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0F1114;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label .info-icon {
+      width: 14px;
+      height: 14px;
+      opacity: 0.6;
+    }
+
+    .field-label.disabled {
+      color: #94A3B8;
+    }
+
+    .field-input {
+      background: #FFFFFF;
+      border: 1px solid #E3E8ED;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.71;
+      color: #0F1114;
+      outline: none;
+    }
+
+    .field-input::placeholder {
+      color: #64748B;
+    }
+
+    .field-input:disabled {
+      background: #F7F8F9;
+      color: #94A3B8;
+    }
+
+    .field-select {
+      background: #FFFFFF;
+      border: 1px solid #E3E8ED;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.71;
+      color: #0F1114;
+      appearance: none;
+      background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 36px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .field-select:disabled {
+      background-color: #F7F8F9;
+      color: #94A3B8;
+      cursor: default;
+    }
+
+    .field-input-with-suffix {
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid #E3E8ED;
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    .field-input-with-suffix input {
+      border: none;
+      outline: none;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.71;
+      color: #0F1114;
+      flex: 1;
+      padding: 0;
+    }
+
+    .field-input-with-suffix input::placeholder {
+      color: #64748B;
+    }
+
+    .field-input-with-suffix .suffix {
+      font-size: 14px;
+      color: #64748B;
+      margin-left: 8px;
+    }
+
+    /* ── Validations ── */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .switch-toggle {
+      width: 36px;
+      height: 20px;
+      border-radius: 20px;
+      background: #C4CDD6;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .switch-toggle.on {
+      background: #006BD8;
+    }
+
+    .switch-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      transition: left 0.2s;
+    }
+
+    .switch-toggle.on::after {
+      left: 18px;
+    }
+
+    .switch-label {
+      font-size: 14px;
+      line-height: 1.57;
+      color: #0F1114;
+    }
+
+    .attachments-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: #006BD8;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .validation-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-left: 0;
+    }
+
+    .fields-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    .fields-row .field-group {
+      flex: 1;
+    }
+
+    /* ── Save Banner ── */
+    .save-banner {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(calc(100% + 60px));
+      background: #2A313A;
+      border-radius: 16px;
+      box-shadow: 2px 2px 24px 0px rgba(22, 52, 98, 0.08);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      width: 563px;
+      z-index: 100;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+    }
+
+    .save-banner.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .save-banner.hiding {
+      transform: translateX(-50%) translateY(calc(100% + 60px));
+      transition: transform 0.35s cubic-bezier(0.55, 0, 1, 0.45);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      10% { transform: translateX(calc(-50% + 6px)) translateY(0); }
+      20% { transform: translateX(calc(-50% - 5px)) translateY(0); }
+      30% { transform: translateX(calc(-50% + 4px)) translateY(0); }
+      40% { transform: translateX(calc(-50% - 3px)) translateY(0); }
+      50% { transform: translateX(calc(-50% + 2px)) translateY(0); }
+      60% { transform: translateX(-50%) translateY(0); }
+    }
+
+    .save-banner.shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .save-banner-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    .save-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-reset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border: 1px solid #5B6A7E;
+      border-radius: 8px;
+      background: transparent;
+      color: #3389E0;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-save {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #3389E0;
+      color: #FFFFFF;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ── Flowpilot FAB ── */
+    .flowpilot-fab {
+      position: fixed;
+      bottom: 30px;
+      right: 40px;
+      width: 41px;
+      height: auto;
+      background: #2A313A;
+      border-radius: 99px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0px 0px 20px 0px rgba(15, 17, 20, 0.16);
+      cursor: pointer;
+      z-index: 101;
+    }
+
+    .flowpilot-fab img {
+      width: 18px;
+      height: 23px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="app-header-left">
+      <div class="logo">
+        <img src="assets/logo.svg" alt="Logo">
+      </div>
+      <div class="project-info">
+        <div class="project-icon">
+          <img src="assets/project-icon.svg" alt="Project">
+        </div>
+        <span class="project-name">[Project]  Mortgage</span>
+      </div>
+      <div class="branch-bar">
+        <div class="branch-tags">
+          <div class="branch-dot"></div>
+          <span class="tag tag-main">main</span>
+          <span class="tag tag-draft">draft</span>
+        </div>
+        <span class="new-version-text">New version</span>
+        <div class="branch-actions">
+          <button class="icon-btn-dark">
+            <img src="assets/new-version-icon.svg" alt="New version">
+          </button>
+          <button class="submit-btn">
+            <img src="assets/submit-icon.svg" alt="Submit">
+            <span>Submit Changes to Version</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="segmented-control">
+      <div class="segment active">Config</div>
+      <div class="segment">Runtime</div>
+    </div>
+  </header>
+
+  <!-- Resource Sub-Header -->
+  <nav class="resource-subheader">
+    <div class="resource-subheader-inner">
+      <div class="breadcrumb-area">
+        <button class="back-btn">
+          <img src="assets/arrow-left.svg" alt="Back">
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-dim">Data Sources</span>
+          <span class="breadcrumb-sep">\</span>
+          <span class="breadcrumb-bold">support-mailbox</span>
+        </div>
+      </div>
+      <button class="dots-btn">
+        <img src="assets/dots-menu.svg" alt="More">
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="page-content">
+    <!-- Resource Header Card -->
+    <div class="resource-header-card">
+      <div>
+        <h1 class="resource-title">support-mailbox</h1>
+        <p class="resource-desc">Sends and receives emails from the support address</p>
+      </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="main-card">
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active">Settings</div>
+        <div class="tab">Authorization</div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-content">
+        <!-- Filtering Criteria Section -->
+        <div class="form-section">
+          <div class="section-title">
+            Filtering Criteria
+            <img class="info-icon" src="assets/info-icon.svg" alt="Info">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Monitored Email
+              <img class="info-icon" src="assets/info-icon.svg" alt="Info">
+            </label>
+            <input class="field-input" type="text" value="client.support@company.com">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Mailbox Folder
+              <img class="info-icon" src="assets/info-icon.svg" alt="Info">
+            </label>
+            <input class="field-input" type="text" value="Inbox">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label disabled">Scope</label>
+            <select class="field-select" disabled>
+              <option>Read & Send Emails</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Validations Section -->
+        <div class="form-section">
+          <div class="section-title">
+            Validations
+          </div>
+
+          <div class="switch-row">
+            <div class="switch-toggle on" data-field="switch-validations"></div>
+            <span class="switch-label">Add validations to Attachments</span>
+            <img class="info-icon" src="assets/info-icon.svg" alt="Info" style="width:16px;height:16px;opacity:0.6;">
+          </div>
+
+          <a class="attachments-link" href="#">Attachments</a>
+
+          <div class="validation-fields">
+            <div class="field-group">
+              <label class="field-label">Allowed File Types</label>
+              <select class="field-select">
+                <option value="" disabled selected>Select file types</option>
+              </select>
+            </div>
+
+            <div class="fields-row">
+              <div class="field-group">
+                <label class="field-label">Maximum File Size</label>
+                <div class="field-input-with-suffix">
+                  <input type="text" placeholder="Enter max file size">
+                  <span class="suffix">MB</span>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Maximum File Count</label>
+                <input class="field-input" type="text" placeholder="Enter max file count">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Save Banner -->
+  <div class="save-banner">
+    <span class="save-banner-text">Careful , you have unsaved changes!</span>
+    <div class="save-banner-actions">
+      <button class="btn-reset">Reset</button>
+      <button class="btn-save">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Flowpilot FAB -->
+  <div class="flowpilot-fab">
+    <img src="assets/flowpilot.svg" alt="Flowpilot">
+  </div>
+
+  <script>
+    (function () {
+      const banner = document.querySelector('.save-banner');
+      const btnReset = document.querySelector('.btn-reset');
+      const btnSave = document.querySelector('.btn-save');
+
+      // Snapshot original values on load
+      let originals = {};
+
+      function getFieldKey(el) {
+        // Build a stable key from the element
+        if (el.dataset.field) return el.dataset.field;
+        const label = el.closest('.field-group, .switch-row');
+        if (label) {
+          const lbl = label.querySelector('.field-label, .switch-label');
+          if (lbl) return lbl.textContent.trim();
+        }
+        return el.name || el.placeholder || Math.random().toString();
+      }
+
+      function snapshotValues() {
+        originals = {};
+        document.querySelectorAll('.field-input, .field-select, .field-input-with-suffix input').forEach(el => {
+          originals[getFieldKey(el)] = el.value;
+        });
+        document.querySelectorAll('.switch-toggle').forEach(el => {
+          originals[getFieldKey(el)] = el.classList.contains('on');
+        });
+      }
+
+      function currentValues() {
+        const vals = {};
+        document.querySelectorAll('.field-input, .field-select, .field-input-with-suffix input').forEach(el => {
+          vals[getFieldKey(el)] = el.value;
+        });
+        document.querySelectorAll('.switch-toggle').forEach(el => {
+          vals[getFieldKey(el)] = el.classList.contains('on');
+        });
+        return vals;
+      }
+
+      function hasChanges() {
+        const curr = currentValues();
+        for (const key in originals) {
+          if (originals[key] !== curr[key]) return true;
+        }
+        return false;
+      }
+
+      // --- Banner visibility ---
+      let bannerVisible = false;
+
+      function showBanner() {
+        if (bannerVisible) return;
+        bannerVisible = true;
+        banner.classList.remove('hiding');
+        // Force reflow so the transition plays from the hidden position
+        void banner.offsetHeight;
+        banner.classList.add('visible');
+      }
+
+      function hideBanner() {
+        if (!bannerVisible) return;
+        bannerVisible = false;
+        banner.classList.remove('visible');
+        banner.classList.add('hiding');
+      }
+
+      function checkDirty() {
+        if (hasChanges()) {
+          showBanner();
+        } else {
+          hideBanner();
+        }
+      }
+
+      // --- Listen for changes ---
+      document.querySelectorAll('.field-input, .field-select, .field-input-with-suffix input').forEach(el => {
+        el.addEventListener('input', checkDirty);
+        el.addEventListener('change', checkDirty);
+      });
+
+      document.querySelectorAll('.switch-toggle').forEach(el => {
+        el.addEventListener('click', () => {
+          el.classList.toggle('on');
+          checkDirty();
+        });
+      });
+
+      // --- Reset ---
+      btnReset.addEventListener('click', () => {
+        document.querySelectorAll('.field-input, .field-select, .field-input-with-suffix input').forEach(el => {
+          el.value = originals[getFieldKey(el)] ?? el.value;
+        });
+        document.querySelectorAll('.switch-toggle').forEach(el => {
+          const wasOn = originals[getFieldKey(el)];
+          el.classList.toggle('on', wasOn);
+        });
+        hideBanner();
+      });
+
+      // --- Save ---
+      btnSave.addEventListener('click', () => {
+        snapshotValues();
+        hideBanner();
+      });
+
+      // --- Shake on navigation attempt ---
+      function shakeBanner(e) {
+        if (!bannerVisible) return;
+        e.preventDefault();
+        banner.classList.remove('shake');
+        void banner.offsetHeight;
+        banner.classList.add('shake');
+        banner.addEventListener('animationend', () => {
+          banner.classList.remove('shake');
+        }, { once: true });
+      }
+
+      // All clickable navigation links
+      document.querySelectorAll('.tab, .back-btn, .breadcrumb-dim, .breadcrumb-bold, .attachments-link, .dots-btn').forEach(el => {
+        el.addEventListener('click', shakeBanner);
+      });
+
+      // --- Init ---
+      snapshotValues();
+    })();
+  </script>
+</body>
+</html>
