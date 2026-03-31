@@ -199,6 +199,9 @@
     .qa-group {
       background: #F7F8F9; border-radius: 12px; padding: 16px;
     }
+    .qa-group + .qa-group {
+      margin-top: 16px;
+    }
 
     /* ── Filter rows ── */
     .filter-row {
@@ -376,7 +379,7 @@
             <div class="params-header-title">Parameters</div>
             <div class="params-header-desc">Define parameters for your arguments. In workflows, assign values to these parameters using node input paths.</div>
           </div>
-          <button class="params-add-btn" data-nav>+</button>
+          <button class="params-add-btn" id="addParamRow">+</button>
         </div>
         <div class="params-table-wrap">
         <table class="params-table">
@@ -500,11 +503,11 @@
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
             <div class="filter-footer">
-              <button class="add-btn" data-nav>+ New Filter</button>
+              <button class="add-btn add-filter-btn">+ New Filter</button>
               <button class="delete-group-btn" data-nav><i class="ph ph-trash-simple"></i> Delete Group</button>
             </div>
           </div>
-          <button class="add-btn new-group-btn" data-nav>+ New Group</button>
+          <button class="add-btn new-group-btn">+ New Group</button>
         </div>
 
         <!-- Projection -->
@@ -527,7 +530,7 @@
               </select>
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-            <button class="add-btn" data-nav>+ Add Key</button>
+            <button class="add-btn add-key-btn">+ Add Key</button>
           </div>
         </div>
 
@@ -551,7 +554,7 @@
               </select>
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-            <button class="add-btn" data-nav>+ Add Key</button>
+            <button class="add-btn add-key-btn">+ Add Key</button>
           </div>
         </div>
 
@@ -590,6 +593,126 @@
     window.PAGE_NAV_CURRENT = 'database-query';
   </script>
   <script src="shared/save-widget.js"></script>
+  <script>
+    (function () {
+      var banner = document.querySelector('.save-banner');
+      var addedElements = [];
+      var idCounter = 0;
+
+      function uid() { return 'dyn' + (++idCounter); }
+
+      function showBanner() {
+        banner.classList.remove('hiding');
+        void banner.offsetHeight;
+        banner.classList.add('visible');
+      }
+
+      function trackAndShow(el) {
+        addedElements.push(el);
+        showBanner();
+      }
+
+      // ── Params table: + button ──
+      var tbody = document.querySelector('.params-table tbody');
+      var paramCount = tbody.querySelectorAll('tr').length;
+
+      document.getElementById('addParamRow').addEventListener('click', function () {
+        paramCount++;
+        var r = 'r' + paramCount;
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><input class="cell-input field-input" data-field="' + r + '-name" placeholder="paramName"></td>' +
+          '<td><select class="cell-select field-select" data-field="' + r + '-type"><option selected>String</option><option>Date</option><option>Number</option></select></td>' +
+          '<td><input class="cell-input field-input" data-field="' + r + '-default" placeholder="default value"></td>' +
+          '<td><input class="cell-input field-input" data-field="' + r + '-desc" placeholder="description"></td>' +
+          '<td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>';
+        tbody.appendChild(tr);
+        trackAndShow(tr);
+      });
+
+      // ── Add Key buttons (Projection & Sort) ──
+      document.querySelectorAll('.add-key-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var group = btn.closest('.qa-group');
+          var u = uid();
+          var row = document.createElement('div');
+          row.className = 'kv-row';
+          row.innerHTML =
+            '<input class="kv-field field-input" data-field="' + u + '-key" placeholder="key">' +
+            '<select class="qa-select medium field-select" data-field="' + u + '-mode"><option selected>Include</option><option>Exclude</option></select>' +
+            '<button class="trash-btn"><i class="ph ph-trash-simple"></i></button>';
+          group.insertBefore(row, btn);
+          trackAndShow(row);
+        });
+      });
+
+      // ── Add Filter button ──
+      document.querySelectorAll('.add-filter-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var footer = btn.closest('.filter-footer');
+          var u = uid();
+          var row = document.createElement('div');
+          row.className = 'filter-row';
+          row.innerHTML =
+            '<select class="qa-and-select field-select" data-field="' + u + '-join"><option selected>And</option><option>Or</option></select>' +
+            '<input class="qa-field wide field-input" data-field="' + u + '-field" placeholder="field">' +
+            '<select class="qa-select medium field-select" data-field="' + u + '-op"><option selected>Contains</option><option>Equals</option><option>Greater than</option><option>Less than</option></select>' +
+            '<input class="qa-field field-input" data-field="' + u + '-value" placeholder="value">' +
+            '<button class="trash-btn"><i class="ph ph-trash-simple"></i></button>';
+          footer.parentNode.insertBefore(row, footer);
+          trackAndShow(row);
+        });
+      });
+
+      // ── New Group button ──
+      document.querySelectorAll('.new-group-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var u = uid();
+          var group = document.createElement('div');
+          group.className = 'qa-group';
+          group.innerHTML =
+            '<div class="filter-row">' +
+              '<input class="qa-field wide field-input" data-field="' + u + '-field" placeholder="field">' +
+              '<select class="qa-select medium field-select" data-field="' + u + '-op"><option selected>Contains</option><option>Equals</option><option>Greater than</option><option>Less than</option></select>' +
+              '<input class="qa-field field-input" data-field="' + u + '-value" placeholder="value">' +
+              '<button class="trash-btn"><i class="ph ph-trash-simple"></i></button>' +
+            '</div>' +
+            '<div class="filter-footer">' +
+              '<button class="add-btn add-filter-btn">+ New Filter</button>' +
+              '<button class="delete-group-btn"><i class="ph ph-trash-simple"></i> Delete Group</button>' +
+            '</div>';
+          btn.parentNode.insertBefore(group, btn);
+          // Wire the new group's filter button
+          group.querySelector('.add-filter-btn').addEventListener('click', function () {
+            var footer = this.closest('.filter-footer');
+            var u2 = uid();
+            var row = document.createElement('div');
+            row.className = 'filter-row';
+            row.innerHTML =
+              '<select class="qa-and-select field-select" data-field="' + u2 + '-join"><option selected>And</option><option>Or</option></select>' +
+              '<input class="qa-field wide field-input" data-field="' + u2 + '-field" placeholder="field">' +
+              '<select class="qa-select medium field-select" data-field="' + u2 + '-op"><option selected>Contains</option><option>Equals</option><option>Greater than</option><option>Less than</option></select>' +
+              '<input class="qa-field field-input" data-field="' + u2 + '-value" placeholder="value">' +
+              '<button class="trash-btn"><i class="ph ph-trash-simple"></i></button>';
+            footer.parentNode.insertBefore(row, footer);
+            trackAndShow(row);
+          });
+          trackAndShow(group);
+        });
+      });
+
+      // ── Reset: remove all dynamically added elements ──
+      banner.querySelector('.btn-reset').addEventListener('click', function () {
+        addedElements.forEach(function (el) { el.remove(); });
+        addedElements = [];
+      });
+
+      // ── Save: keep added elements, clear tracking ──
+      banner.querySelector('.btn-save').addEventListener('click', function () {
+        addedElements = [];
+      });
+    })();
+  </script>
   <script src="shared/page-nav.js"></script>
 </body>
 </html>

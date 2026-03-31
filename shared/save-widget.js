@@ -80,7 +80,6 @@
   }
 
   function hideBanner() {
-    if (!bannerVisible) return;
     bannerVisible = false;
     banner.classList.remove('visible');
     banner.classList.add('hiding');
