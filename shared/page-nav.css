@@ -107,44 +107,38 @@
 /* ── Variant switcher ── */
 .page-nav-variants {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 4px 16px 4px;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px 8px;
 }
 
 .page-nav-variant {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: #2A313A;
-  cursor: pointer;
-  transition: background 0.15s;
-  text-align: left;
-  width: 100%;
+  justify-content: center;
 }
 
 .page-nav-variant:hover {
-  background: #F1F3F6;
+  border-color: rgba(0, 107, 216, 0.3);
 }
 
 .page-nav-variant.active {
-  background: rgba(0, 107, 216, 0.06);
-  font-weight: 600;
-  color: #006BD8;
+  border-color: #006BD8;
 }
 
 .page-nav-variant-swatch {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 4px;
-  flex-shrink: 0;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 

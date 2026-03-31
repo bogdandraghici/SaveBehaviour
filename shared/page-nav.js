@@ -69,11 +69,23 @@
     const btn = document.createElement('button');
     btn.className = 'page-nav-variant' + (v.id === 'dark' ? ' active' : '');
     btn.dataset.variant = v.id;
-    btn.innerHTML = `<span class="page-nav-variant-swatch" data-variant="${v.id}"></span>${v.label}`;
+    btn.title = v.label;
+    btn.innerHTML = `<span class="page-nav-variant-swatch" data-variant="${v.id}"></span>`;
     varContainer.appendChild(btn);
   });
 
   panel.appendChild(varContainer);
+
+  // Spec link
+  const specDivider = document.createElement('div');
+  specDivider.className = 'page-nav-divider';
+  panel.appendChild(specDivider);
+
+  const specLink = document.createElement('a');
+  specLink.className = 'page-nav-link';
+  specLink.href = 'widget-spec.html';
+  specLink.innerHTML = '<span class="page-nav-dot"></span>Widget Spec';
+  panel.appendChild(specLink);
 
   document.body.appendChild(toggle);
   document.body.appendChild(panel);
@@ -106,5 +118,11 @@
         banner.setAttribute('data-variant', variant);
       }
     }
+
+    // Apply variant to widget-preview on spec page
+    document.querySelectorAll('.widget-preview').forEach(el => {
+      el.classList.remove('dark', 'blue', 'light');
+      el.classList.add(variant);
+    });
   });
 })();

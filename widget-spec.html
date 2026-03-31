@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Widget - Component Spec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/page-nav.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #FFFFFF;
+      min-height: 100vh;
+      color: #0F1114;
+    }
+
+    .spec-header {
+      padding: 48px 64px 32px;
+      border-bottom: 1px solid #E3E8ED;
+    }
+    .spec-header h1 { font-size: 24px; font-weight: 700; color: #0F1114; margin-bottom: 4px; }
+    .spec-header p { font-size: 14px; color: #64748B; }
+
+    .spec-body {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 48px 32px 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    /* ── Section ── */
+    .spec-section { display: flex; flex-direction: column; gap: 20px; }
+    .spec-section h2 {
+      font-size: 16px; font-weight: 700; color: #0F1114;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .spec-section h3 { font-size: 14px; font-weight: 600; color: #64748B; margin-top: 4px; }
+    .spec-section p { font-size: 14px; line-height: 1.7; color: #475263; }
+
+    /* ── State preview ── */
+    .state-preview {
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .state-demo {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .state-label { font-size: 12px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* ── Inline widget previews ── */
+    .widget-preview {
+      border-radius: 16px; padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center; gap: 32px;
+      font-family: 'Open Sans', sans-serif; white-space: nowrap;
+      box-shadow: 2px 2px 24px 0px rgba(22, 52, 98, 0.08);
+    }
+    .widget-preview.dark { background: #2A313A; }
+    .widget-preview.blue { background: #006BD8; }
+    .widget-preview.light { background: #FFF; border: 1px solid #E3E8ED; }
+    .widget-preview .wp-text { font-size: 14px; font-weight: 600; }
+    .widget-preview.dark .wp-text, .widget-preview.blue .wp-text { color: #FFF; }
+    .widget-preview.light .wp-text { color: #1E1E1E; }
+    .wp-actions { display: flex; align-items: center; gap: 16px; }
+    .wp-btn-reset {
+      padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      background: transparent; cursor: default; font-family: 'Open Sans', sans-serif;
+    }
+    .widget-preview.dark .wp-btn-reset { border: 1px solid #5B6A7E; color: #3389E0; }
+    .widget-preview.blue .wp-btn-reset { border: 1px solid rgba(255,255,255,0.4); color: #FFF; }
+    .widget-preview.light .wp-btn-reset { border: 1px solid #E3E8ED; color: #006BD8; }
+    .wp-btn-save {
+      padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      color: #FFF; border: none; cursor: default; font-family: 'Open Sans', sans-serif;
+    }
+    .widget-preview.dark .wp-btn-save { background: #3389E0; }
+    .widget-preview.blue .wp-btn-save { background: #339980; }
+    .widget-preview.light .wp-btn-save { background: #006BD8; }
+
+    .saved-preview {
+      background: #008060; border-radius: 8px; padding: 8px 12px;
+      display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0px 10px 24px 0px rgba(15, 17, 20, 0.1);
+    }
+    .saved-preview img { width: 24px; height: 24px; }
+    .saved-preview span { font-size: 14px; font-weight: 600; color: #FFF; }
+
+    /* ── Interaction cards ── */
+    .interaction-list {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .interaction-item {
+      display: flex; gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid #F1F3F6;
+    }
+    .interaction-item:last-child { border-bottom: none; }
+    .interaction-name {
+      width: 160px; flex-shrink: 0;
+      font-size: 14px; font-weight: 700; color: #0F1114;
+    }
+    .interaction-detail { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .interaction-trigger { font-size: 12px; color: #64748B; }
+    .interaction-desc { font-size: 14px; color: #475263; line-height: 1.6; }
+    .interaction-timing {
+      font-size: 12px; color: #94A3B8; margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="spec-header">
+    <h1>Save Widget</h1>
+    <p>Component specification for designers and product managers</p>
+  </div>
+
+  <div class="spec-body">
+
+    <!-- ── Overview ── -->
+    <div class="spec-section">
+      <h2>Overview</h2>
+      <p>
+        A floating banner that appears at the bottom-center of the viewport when a user modifies any form element on the page.
+        It provides two actions: Reset (revert all changes) and Save Changes (persist and confirm).
+        If the user tries to navigate away while the banner is visible, it shakes to signal that changes must be addressed first.
+      </p>
+      <div class="state-preview" style="margin-top: 8px;">
+        <div class="state-demo">
+          <div class="widget-preview light">
+            <span class="wp-text">Careful , you have unsaved changes!</span>
+            <div class="wp-actions">
+              <button class="wp-btn-reset">Reset</button>
+              <button class="wp-btn-save">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Interaction Behaviour ── -->
+    <div class="spec-section">
+      <h2>Interaction Behaviour</h2>
+
+      <div class="interaction-list">
+        <div class="interaction-item">
+          <div class="interaction-name">Appear</div>
+          <div class="interaction-detail">
+            <div class="interaction-trigger">When any tracked field changes from its saved value</div>
+            <div class="interaction-desc">The widget slides up from below the viewport. It stays visible as long as there are unsaved changes. If the user manually reverts all fields to their original values, it slides back down automatically.</div>
+          </div>
+        </div>
+        <div class="interaction-item">
+          <div class="interaction-name">Reset</div>
+          <div class="interaction-detail">
+            <div class="interaction-trigger">User clicks "Reset"</div>
+            <div class="interaction-desc">All fields revert to their last saved values. Any dynamically added rows or groups are removed. The widget slides down out of view.</div>
+          </div>
+        </div>
+        <div class="interaction-item">
+          <div class="interaction-name">Save</div>
+          <div class="interaction-detail">
+            <div class="interaction-trigger">User clicks "Save Changes"</div>
+            <div class="interaction-desc">Current values become the new baseline. The banner morphs into a green toast message showing a checkmark and "Saved". After a brief hold, it slides down and resets internally.</div>
+          </div>
+        </div>
+        <div class="interaction-item">
+          <div class="interaction-name">Navigation Guard</div>
+          <div class="interaction-detail">
+            <div class="interaction-trigger">User clicks any navigation element while the banner is visible</div>
+            <div class="interaction-desc">The widget shakes horizontally to draw attention. Navigation is blocked. The user must save or reset before leaving the page.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Scripts ── -->
+  <script>
+    window.PAGE_NAV_PAGES = [
+      { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
+      { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+      { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
+      { id: 'branding', label: 'Branding', href: 'branding.html' },
+    ];
+    window.PAGE_NAV_CURRENT = '';
+  </script>
+  <script src="shared/page-nav.js"></script>
+</body>
+</html>
