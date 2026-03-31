@@ -49,6 +49,9 @@
     document.querySelectorAll('.switch-toggle').forEach(el => {
       originals[getFieldKey(el)] = el.classList.contains('on');
     });
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      originals['ce:' + (el.dataset.field || el.className)] = el.textContent;
+    });
   }
 
   function hasChanges() {
@@ -58,6 +61,9 @@
     });
     document.querySelectorAll('.switch-toggle').forEach(el => {
       if (originals[getFieldKey(el)] !== el.classList.contains('on')) dirty = true;
+    });
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      if (originals['ce:' + (el.dataset.field || el.className)] !== el.textContent) dirty = true;
     });
     return dirty;
   }
@@ -91,6 +97,10 @@
     el.addEventListener('change', checkDirty);
   });
 
+  document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+    el.addEventListener('input', checkDirty);
+  });
+
   document.querySelectorAll('.switch-toggle').forEach(el => {
     el.addEventListener('click', () => {
       el.classList.toggle('on');
@@ -105,6 +115,10 @@
     });
     document.querySelectorAll('.switch-toggle').forEach(el => {
       el.classList.toggle('on', !!originals[getFieldKey(el)]);
+    });
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      const key = 'ce:' + (el.dataset.field || el.className);
+      if (originals[key] != null) el.textContent = originals[key];
     });
     hideBanner();
   });

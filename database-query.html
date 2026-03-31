@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Database Query - Find Client</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2"></script>
   <link rel="stylesheet" href="shared/save-widget.css">
   <link rel="stylesheet" href="shared/page-nav.css">
   <style>
@@ -115,6 +116,11 @@
 
     /* ── Page Layout ── */
     .page-content { padding: 24px; padding-bottom: 120px; }
+    .content-card {
+      background: #FFF; border-radius: 16px;
+      box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
+      padding: 24px;
+    }
     .two-panel { display: flex; gap: 24px; }
     .panel-left { width: 795px; flex-shrink: 0; }
     .panel-right { flex: 1; }
@@ -129,111 +135,150 @@
     .section-info { display: flex; align-items: center; gap: 4px; }
     .section-info img { width: 14px; height: 14px; opacity: 0.6; }
 
+    /* ── Parameters Section Header ── */
+    .params-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .params-header-left {}
+    .params-header-title { font-size: 14px; font-weight: 700; color: #0F1114; margin-bottom: 4px; }
+    .params-header-desc { font-size: 13px; color: #64748B; }
+    .params-add-btn {
+      width: 36px; height: 36px; border: none; border-radius: 8px;
+      background: #006BD8; color: #FFF; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .params-add-btn:hover { background: #0059B3; }
+
     /* ── Parameters Table ── */
+    .params-table-wrap {
+      border: 1px solid #E3E8ED; border-radius: 16px; overflow: hidden;
+    }
     .params-table {
-      width: 100%; border-collapse: separate; border-spacing: 0;
-      background: #FFF; border: 0.5px solid #CBD1DB; border-radius: 16px;
-      overflow: hidden;
+      width: 100%; border-collapse: collapse;
     }
     .params-table th {
-      text-align: left; font-size: 12px; font-weight: 600; color: #64748B;
-      padding: 10px 16px; background: #F7F8F9; border-bottom: 1px solid #E3E8ED;
+      text-align: left; font-size: 13px; font-weight: 400; color: #64748B;
+      padding: 14px 16px; border-bottom: 1px solid #E3E8ED;
+      border-right: 1px solid #E3E8ED; background: #F7F8F9;
     }
+    .params-table th:first-child { font-weight: 700; color: #0F1114; }
+    .params-table th:last-child { border-right: none; width: 56px; }
     .params-table td {
-      font-size: 13px; color: #0F1114; padding: 8px 16px;
-      border-bottom: 1px solid #F1F3F6;
+      padding: 14px 16px; border-bottom: 1px solid #E3E8ED;
+      border-right: 1px solid #E3E8ED; vertical-align: middle;
     }
+    .params-table td:last-child { border-right: none; width: 56px; text-align: center; }
     .params-table tr:last-child td { border-bottom: none; }
     .params-table .cell-input {
-      background: transparent; border: none; font-family: 'Open Sans', sans-serif;
-      font-size: 13px; color: #0F1114; width: 100%; outline: none;
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      width: 100%; outline: none; background: #FFF;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 10px 12px;
     }
     .params-table .cell-select {
-      background: transparent; border: none; font-family: 'Open Sans', sans-serif;
-      font-size: 13px; color: #0F1114; outline: none; cursor: pointer;
-      appearance: none; padding-right: 16px;
-      background-image: url('assets/caret-down.svg'); background-repeat: no-repeat;
-      background-position: right center; background-size: 12px;
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      outline: none; cursor: pointer; background: #FFF; width: 100%;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 10px 12px;
+      appearance: none; background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right 12px center;
+      background-size: 12px; padding-right: 32px;
     }
     .row-delete {
-      width: 28px; height: 28px; border: none; background: transparent;
-      cursor: pointer; opacity: 0.4; font-size: 16px; color: #64748B;
+      border: none; background: transparent; cursor: pointer;
+      color: #94A3B8; display: inline-flex; align-items: center;
+      justify-content: center; padding: 0; font-size: 18px;
     }
-    .row-delete:hover { opacity: 1; }
+    .row-delete:hover { color: #64748B; }
 
     /* ── Query Arguments Panel ── */
     .qa-section { margin-bottom: 24px; }
     .qa-label {
-      font-size: 12px; font-weight: 600; color: #006BD8;
-      margin-bottom: 8px; display: block;
+      font-size: 13px; font-weight: 400; color: #64748B;
+      margin-bottom: 6px; display: block;
+    }
+    .qa-group {
+      background: #F7F8F9; border-radius: 12px; padding: 16px;
     }
 
     /* ── Filter rows ── */
     .filter-row {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
     }
-    .filter-row .field-input, .filter-row .field-select {
-      max-width: none;
-    }
-    .filter-field {
+    .qa-field {
       font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
-      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 8px 12px;
       outline: none; background: #FFF;
     }
-    .filter-field.wide { flex: 1; }
-    .filter-field.medium { width: 120px; }
-    .filter-field.narrow { width: 90px; }
-    .filter-type {
-      font-family: 'Open Sans', sans-serif; font-size: 12px; color: #64748B;
-      background: #F1F3F6; border: none; border-radius: 4px; padding: 5px 8px;
-      width: 48px; text-align: center;
+    .qa-field.wide { flex: 1; }
+    .qa-field.medium { width: 140px; }
+    .qa-field-with-suffix {
+      display: flex; align-items: center; background: #FFF;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 8px 12px; flex: 1;
     }
-    .filter-suffix {
-      font-size: 11px; color: #94A3B8; background: #F7F8F9;
-      border-radius: 4px; padding: 2px 6px;
+    .qa-field-with-suffix input {
+      border: none; outline: none; font-family: 'Open Sans', sans-serif;
+      font-size: 13px; color: #0F1114; flex: 1; padding: 0; background: transparent;
     }
-    .filter-actions { display: flex; align-items: center; gap: 4px; }
-    .filter-icon-btn {
-      width: 24px; height: 24px; border: none; background: transparent;
-      cursor: pointer; opacity: 0.4; font-size: 14px; display: flex;
-      align-items: center; justify-content: center;
+    .qa-field-with-suffix .suffix {
+      font-size: 12px; color: #94A3B8; margin-left: 8px; white-space: nowrap;
     }
-    .filter-icon-btn:hover { opacity: 1; }
+    .qa-select {
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 8px 12px;
+      outline: none; background: #FFF; cursor: pointer;
+      appearance: none; background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right 12px center;
+      background-size: 12px; padding-right: 32px;
+    }
+    .qa-select.medium { width: 140px; }
+    .qa-select.narrow { width: 90px; }
+    .qa-and-select {
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #64748B;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 8px 10px;
+      outline: none; background: #FFF; cursor: pointer; width: 80px;
+      appearance: none; background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right 8px center;
+      background-size: 12px; padding-right: 24px;
+    }
+    .qa-and-text {
+      font-size: 13px; color: #64748B; width: 80px; padding: 8px 10px;
+    }
+    .trash-btn {
+      width: 32px; height: 32px; border: 1px solid #E3E8ED; border-radius: 8px;
+      background: #FFF; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; font-size: 15px; color: #64748B;
+    }
+    .trash-btn:hover { border-color: #CBD1DB; }
 
     /* ── Add buttons ── */
     .add-btn {
       display: inline-flex; align-items: center; gap: 4px;
-      font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
+      font-family: 'Open Sans', sans-serif; font-size: 13px; font-weight: 600;
       color: #006BD8; background: none; border: none; cursor: pointer;
-      padding: 4px 0;
+      padding: 6px 0;
     }
     .delete-group-btn {
       display: inline-flex; align-items: center; gap: 4px;
-      font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
-      color: #E04B4B; background: none; border: none; cursor: pointer;
-      padding: 4px 0;
+      font-family: 'Open Sans', sans-serif; font-size: 13px; font-weight: 600;
+      color: #006BD8; background: none; border: none; cursor: pointer;
+      padding: 6px 0;
     }
     .filter-footer {
       display: flex; justify-content: space-between; align-items: center;
-      margin-top: 6px;
+      margin-top: 4px;
+    }
+    .new-group-btn {
+      margin-top: 8px; margin-bottom: 16px;
     }
 
     /* ── Projection / Sort rows ── */
     .kv-row {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
     }
     .kv-field {
       font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
-      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 8px 12px;
       outline: none; background: #FFF; flex: 1;
-    }
-    .kv-select {
-      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
-      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
-      outline: none; background: #FFF; width: 130px; cursor: pointer;
-      appearance: none; background-image: url('assets/caret-down.svg');
-      background-repeat: no-repeat; background-position: right 10px center;
-      background-size: 12px; padding-right: 28px;
     }
 
     /* ── Limit / Skip row ── */
@@ -244,7 +289,7 @@
     .limit-label { font-size: 13px; font-weight: 600; color: #0F1114; }
     .limit-input {
       font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
-      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      border: 1px solid #E3E8ED; border-radius: 8px; padding: 8px 12px;
       outline: none; background: #FFF; width: 80px;
     }
 
@@ -321,18 +366,19 @@
       </div>
     </div>
 
-    <!-- Two-panel layout -->
+    <!-- Content Card -->
+    <div class="content-card">
     <div class="two-panel">
       <!-- Left: Parameters -->
       <div class="panel-left">
-        <div class="section-header">
-          <div>
-            <span class="section-title-sm">Parameters</span>
-            <span class="section-subtitle" style="margin-left:8px;">
-              Define parameters for your arguments, in workflows, assign values to these parameters using node input paths
-            </span>
+        <div class="params-header">
+          <div class="params-header-left">
+            <div class="params-header-title">Parameters</div>
+            <div class="params-header-desc">Define parameters for your arguments. In workflows, assign values to these parameters using node input paths.</div>
           </div>
+          <button class="params-add-btn" data-nav>+</button>
         </div>
+        <div class="params-table-wrap">
         <table class="params-table">
           <thead>
             <tr>
@@ -355,7 +401,7 @@
               </td>
               <td><input class="cell-input field-input" value="11.01.2020"></td>
               <td><input class="cell-input field-input" value="client first name"></td>
-              <td><button class="row-delete">×</button></td>
+              <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
             <tr>
               <td><input class="cell-input field-input" value="param2"></td>
@@ -368,7 +414,7 @@
               </td>
               <td><input class="cell-input field-input" value="Doe"></td>
               <td><input class="cell-input field-input" value="client last name"></td>
-              <td><button class="row-delete">×</button></td>
+              <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
             <tr>
               <td><input class="cell-input field-input" value="param3"></td>
@@ -381,7 +427,7 @@
               </td>
               <td><input class="cell-input field-input" value="25"></td>
               <td><input class="cell-input field-input" value="client age"></td>
-              <td><button class="row-delete">×</button></td>
+              <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
             <tr>
               <td><input class="cell-input field-input" value="param4"></td>
@@ -395,10 +441,11 @@
               </td>
               <td><input class="cell-input field-input" value="25"></td>
               <td><input class="cell-input field-input" value="client age"></td>
-              <td><button class="row-delete">×</button></td>
+              <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
 
       <!-- Right: Query Arguments -->
@@ -413,117 +460,103 @@
         <!-- Filter -->
         <div class="qa-section">
           <span class="qa-label">Filter</span>
-          <div class="filter-row">
-            <input class="filter-type field-input" value="And" readonly>
-            <input class="filter-field wide field-input" value="client.firstName">
-            <span class="filter-suffix">string</span>
-            <select class="filter-field medium field-select">
-              <option selected>Contains</option>
-              <option>Equals</option>
-            </select>
-            <input class="filter-field field-input" value="Popescu">
-            <span class="filter-suffix">string</span>
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+          <div class="qa-group">
+            <div class="filter-row">
+              <div class="qa-field-with-suffix" style="flex:1">
+                <input class="field-input" value="client.firstName" style="border:none;outline:none;font-family:'Open Sans',sans-serif;font-size:13px;color:#0F1114;flex:1;padding:0;background:transparent;">
+                <span class="suffix" style="font-size:12px;color:#94A3B8;margin-left:8px;">string</span>
+              </div>
+              <select class="qa-select medium field-select">
+                <option selected>Contains</option>
+                <option>Equals</option>
+              </select>
+              <div class="qa-field-with-suffix">
+                <input class="field-input" value="Popescu" style="border:none;outline:none;font-family:'Open Sans',sans-serif;font-size:13px;color:#0F1114;flex:1;padding:0;background:transparent;">
+                <span class="suffix" style="font-size:12px;color:#94A3B8;margin-left:8px;">string</span>
+              </div>
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-          </div>
-          <div class="filter-row">
-            <input class="filter-type field-input" value="And" readonly>
-            <input class="filter-field wide field-input" value="client.clientDateOfBirth">
-            <select class="filter-field medium field-select">
-              <option selected>Greater than</option>
-              <option>Less than</option>
-            </select>
-            <input class="filter-field field-input" value="${startDate}">
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+            <div class="filter-row">
+              <select class="qa-and-select field-select">
+                <option selected>And</option>
+                <option>Or</option>
+              </select>
+              <input class="qa-field wide field-input" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select">
+                <option selected>Greater than</option>
+                <option>Less than</option>
+              </select>
+              <input class="qa-field field-input" value="${startDate}">
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-          </div>
-          <div class="filter-row">
-            <input class="filter-type field-input" value="And" readonly>
-            <input class="filter-field wide field-input" value="client.clientDateOfBirth">
-            <select class="filter-field medium field-select">
-              <option>Greater than</option>
-              <option selected>Lower than</option>
-            </select>
-            <input class="filter-field field-input" value="${endDate}">
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+            <div class="filter-row">
+              <span class="qa-and-text">And</span>
+              <input class="qa-field wide field-input" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select">
+                <option>Greater than</option>
+                <option selected>Lower than</option>
+              </select>
+              <input class="qa-field field-input" value="${endDate}">
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-          </div>
-          <div class="filter-footer">
-            <div>
+            <div class="filter-footer">
               <button class="add-btn" data-nav>+ New Filter</button>
-              <button class="add-btn" data-nav style="margin-left:16px;">+ New Group</button>
+              <button class="delete-group-btn" data-nav><i class="ph ph-trash-simple"></i> Delete Group</button>
             </div>
-            <button class="delete-group-btn" data-nav>Delete Group</button>
           </div>
+          <button class="add-btn new-group-btn" data-nav>+ New Group</button>
         </div>
 
         <!-- Projection -->
         <div class="qa-section">
           <span class="qa-label">Projection</span>
-          <div class="kv-row">
-            <input class="kv-field field-input" value="client.clientDateOfBirth">
-            <select class="kv-select field-select">
-              <option selected>Include</option>
-              <option>Exclude</option>
-            </select>
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+          <div class="qa-group">
+            <div class="kv-row">
+              <input class="kv-field field-input" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select">
+                <option selected>Include</option>
+                <option>Exclude</option>
+              </select>
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-          </div>
-          <div class="kv-row">
-            <input class="kv-field field-input" value="client.firstName">
-            <select class="kv-select field-select">
-              <option selected>Include</option>
-              <option>Exclude</option>
-            </select>
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+            <div class="kv-row">
+              <input class="kv-field field-input" value="client.firstName">
+              <select class="qa-select medium field-select">
+                <option selected>Include</option>
+                <option>Exclude</option>
+              </select>
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
+            <button class="add-btn" data-nav>+ Add Key</button>
           </div>
-          <button class="add-btn" data-nav>+ Add Key</button>
         </div>
 
         <!-- Sort -->
         <div class="qa-section">
           <span class="qa-label">Sort</span>
-          <div class="kv-row">
-            <input class="kv-field field-input" value="client.clientDateOfBirth">
-            <select class="kv-select field-select">
-              <option selected>Ascending</option>
-              <option>Descending</option>
-            </select>
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+          <div class="qa-group">
+            <div class="kv-row">
+              <input class="kv-field field-input" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select">
+                <option selected>Ascending</option>
+                <option>Descending</option>
+              </select>
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
-          </div>
-          <div class="kv-row">
-            <input class="kv-field field-input" value="client.firstName">
-            <select class="kv-select field-select">
-              <option>Ascending</option>
-              <option selected>Descending</option>
-            </select>
-            <div class="filter-actions">
-              <button class="filter-icon-btn">×</button>
+            <div class="kv-row">
+              <input class="kv-field field-input" value="client.firstName">
+              <select class="qa-select medium field-select">
+                <option>Ascending</option>
+                <option selected>Descending</option>
+              </select>
+              <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
+            <button class="add-btn" data-nav>+ Add Key</button>
           </div>
-          <button class="add-btn" data-nav>+ Add Key</button>
         </div>
 
-        <!-- Limit / Skip -->
-        <div class="limit-row">
-          <div class="limit-group">
-            <label class="limit-label">Limit</label>
-            <input class="limit-input field-input" value="50">
-          </div>
-          <div class="limit-group">
-            <label class="limit-label">Skip</label>
-            <input class="limit-input field-input" value="0">
-          </div>
-        </div>
       </div>
+    </div>
     </div>
   </main>
 
@@ -551,6 +584,7 @@
     window.PAGE_NAV_PAGES = [
       { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
       { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+      { id: 'functions', label: 'Functions', href: 'functions.html' },
     ];
     window.PAGE_NAV_CURRENT = 'database-query';
   </script>
