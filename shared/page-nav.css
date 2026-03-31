@@ -96,3 +96,67 @@
 .page-nav-link.active .page-nav-dot {
   background: #006BD8;
 }
+
+/* ── Divider ── */
+.page-nav-divider {
+  height: 1px;
+  background: #E3E8ED;
+  margin: 6px 16px;
+}
+
+/* ── Variant switcher ── */
+.page-nav-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 16px 4px;
+}
+
+.page-nav-variant {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2A313A;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+  width: 100%;
+}
+
+.page-nav-variant:hover {
+  background: #F1F3F6;
+}
+
+.page-nav-variant.active {
+  background: rgba(0, 107, 216, 0.06);
+  font-weight: 600;
+  color: #006BD8;
+}
+
+.page-nav-variant-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.page-nav-variant-swatch[data-variant="dark"] {
+  background: #2A313A;
+}
+
+.page-nav-variant-swatch[data-variant="blue"] {
+  background: #006BD8;
+}
+
+.page-nav-variant-swatch[data-variant="light"] {
+  background: #FFFFFF;
+  border-color: #E3E8ED;
+}

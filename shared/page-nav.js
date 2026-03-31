@@ -3,11 +3,11 @@
  *
  * Reads the page registry from `PAGE_NAV_PAGES` (set before this script)
  * and renders a toggle button + dropdown panel in the top-right corner.
+ * Also renders a widget variant switcher.
  *
  * Each page should define before including this script:
  *   window.PAGE_NAV_PAGES = [
  *     { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
- *     { id: 'oracle-db',        label: 'Oracle DB',         href: 'oracle-db.html' },
  *   ];
  *   window.PAGE_NAV_CURRENT = 'email-connections';
  */
@@ -15,6 +15,12 @@
   const pages   = window.PAGE_NAV_PAGES   || [];
   const current = window.PAGE_NAV_CURRENT || '';
   if (!pages.length) return;
+
+  const VARIANTS = [
+    { id: 'dark',  label: 'Dark' },
+    { id: 'blue',  label: 'Blue' },
+    { id: 'light', label: 'Light' },
+  ];
 
   // ── Build toggle button ──
   const toggle = document.createElement('button');
@@ -31,10 +37,11 @@
   const panel = document.createElement('div');
   panel.className = 'page-nav-panel';
 
-  const title = document.createElement('div');
-  title.className = 'page-nav-title';
-  title.textContent = 'Prototype Pages';
-  panel.appendChild(title);
+  // Pages section
+  const pagesTitle = document.createElement('div');
+  pagesTitle.className = 'page-nav-title';
+  pagesTitle.textContent = 'Pages';
+  panel.appendChild(pagesTitle);
 
   pages.forEach(p => {
     const a = document.createElement('a');
@@ -44,8 +51,33 @@
     panel.appendChild(a);
   });
 
+  // Divider
+  const divider = document.createElement('div');
+  divider.className = 'page-nav-divider';
+  panel.appendChild(divider);
+
+  // Variants section
+  const varTitle = document.createElement('div');
+  varTitle.className = 'page-nav-title';
+  varTitle.textContent = 'Widget Variant';
+  panel.appendChild(varTitle);
+
+  const varContainer = document.createElement('div');
+  varContainer.className = 'page-nav-variants';
+
+  VARIANTS.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'page-nav-variant' + (v.id === 'dark' ? ' active' : '');
+    btn.dataset.variant = v.id;
+    btn.innerHTML = `<span class="page-nav-variant-swatch" data-variant="${v.id}"></span>${v.label}`;
+    varContainer.appendChild(btn);
+  });
+
+  panel.appendChild(varContainer);
+
   document.body.appendChild(toggle);
   document.body.appendChild(panel);
+  panel.classList.add('open');
 
   // ── Toggle behaviour ──
   toggle.addEventListener('click', (e) => {
@@ -53,13 +85,26 @@
     panel.classList.toggle('open');
   });
 
-  document.addEventListener('click', (e) => {
-    if (!panel.contains(e.target) && e.target !== toggle) {
-      panel.classList.remove('open');
-    }
-  });
+  // ── Variant switching ──
+  const banner = document.querySelector('.save-banner');
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') panel.classList.remove('open');
+  varContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('.page-nav-variant');
+    if (!btn) return;
+
+    const variant = btn.dataset.variant;
+
+    // Update active state in menu
+    varContainer.querySelectorAll('.page-nav-variant').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Apply variant to banner
+    if (banner) {
+      if (variant === 'dark') {
+        banner.removeAttribute('data-variant');
+      } else {
+        banner.setAttribute('data-variant', variant);
+      }
+    }
   });
 })();

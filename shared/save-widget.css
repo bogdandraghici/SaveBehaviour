@@ -29,14 +29,16 @@
   transition: transform 0.35s cubic-bezier(0.55, 0, 1, 0.45);
 }
 
-/* Morph to saved pill */
-.save-banner.saved {
+/* Morph to saved pill — must override all variants */
+.save-banner.saved,
+.save-banner.saved[data-variant] {
   background: #008060;
   width: auto;
   border-radius: 8px;
   padding: 8px 12px;
   box-shadow: 0px 10px 24px 0px rgba(15, 17, 20, 0.1);
   overflow: visible;
+  border: none;
 }
 
 .save-banner.saved.hiding {
@@ -136,5 +138,39 @@
 .saved-text {
   font-size: 14px;
   font-weight: 600;
+  color: #FFFFFF;
+}
+
+/* ── Variant: Blue ── */
+.save-banner[data-variant="blue"] {
+  background: #006BD8;
+}
+
+.save-banner[data-variant="blue"] .btn-reset {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+}
+
+.save-banner[data-variant="blue"] .btn-save {
+  background: #339980;
+}
+
+/* ── Variant: Light ── */
+.save-banner[data-variant="light"] {
+  background: #FFFFFF;
+  border: 1px solid #E3E8ED;
+}
+
+.save-banner[data-variant="light"] .save-banner-text {
+  color: #1E1E1E;
+}
+
+.save-banner[data-variant="light"] .btn-reset {
+  border-color: #E3E8ED;
+  color: #006BD8;
+}
+
+.save-banner[data-variant="light"] .btn-save {
+  background: #006BD8;
   color: #FFFFFF;
 }
