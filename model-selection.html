@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Selection - Defaults & Fallbacks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2"></script>
+  <link rel="stylesheet" href="shared/save-widget.css">
+  <link rel="stylesheet" href="shared/page-nav.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #F1F3F6;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 290px;
+      background: #FFF;
+      border-right: 1px solid #E3E8ED;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      flex-shrink: 0;
+    }
+    .sidebar-logo {
+      padding: 24px 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-logo img { width: 80%; height: auto; }
+
+    .sidebar-env {
+      padding: 0 16px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .env-label {
+      font-size: 11px; font-weight: 600; color: #94A3B8;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .env-select {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      background: #FFF; font-family: 'Open Sans', sans-serif;
+      font-size: 13px; color: #0F1114; cursor: pointer;
+    }
+    .env-select i { font-size: 14px; color: #64748B; }
+
+    .sidebar-nav { flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 20px; }
+
+    .nav-group { display: flex; flex-direction: column; gap: 2px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 6px; font-size: 14px;
+      font-weight: 600; color: #2A313A; cursor: pointer; text-decoration: none;
+    }
+    .nav-item:hover { background: #F1F3F6; }
+    .nav-item i { font-size: 20px; width: 24px; text-align: center; color: #64748B; }
+
+    .nav-expandable { display: flex; flex-direction: column; }
+    .nav-sub-list { display: flex; flex-direction: column; gap: 2px; padding-left: 40px; }
+    .nav-sub-item {
+      display: flex; align-items: center;
+      padding: 4px 16px 4px 8px; border-radius: 10px; font-size: 12px;
+      font-weight: 400; color: #2A313A; cursor: pointer; text-decoration: none;
+    }
+    .nav-sub-item:hover { background: #F1F3F6; }
+    .nav-sub-item.active {
+      background: #E6F0FB; color: #006BD8; font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px; border-top: 1px solid #E3E8ED;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #FEB913; color: #0F1114; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .footer-name { font-size: 13px; font-weight: 600; color: #0F1114; }
+    .footer-email { font-size: 11px; color: #64748B; }
+
+    /* ── Main Content ── */
+    .main {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-y: auto;
+    }
+
+    /* ── Title Card ── */
+    .title-card {
+      background: #FFF; border-radius: 16px;
+      box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
+      padding: 16px 32px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .title-heading { font-size: 28px; font-weight: 700; color: #000; line-height: 1.5; }
+    .title-desc { font-size: 14px; color: #64748B; line-height: 1.57; }
+
+    /* ── Content Card ── */
+    .content-card {
+      background: #FFF; border-radius: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; align-items: center;
+      border-bottom: 1px solid #E3E8ED;
+      padding: 0 24px;
+    }
+    .tab {
+      padding: 12px 16px; font-size: 14px; font-weight: 600;
+      color: #64748B; cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab:hover { color: #0F1114; }
+    .tab.active { color: #006BD8; border-bottom-color: #006BD8; }
+
+    /* ── Cards Grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 24px;
+    }
+
+    /* ── Model Card ── */
+    .model-card {
+      background: #FFF; border: 1px solid #E3E8ED; border-radius: 16px;
+      padding: 20px;
+      display: flex; flex-direction: column; gap: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .model-card-header {
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .model-card-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: #E6F0FB; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .model-card-icon i { font-size: 18px; color: #006BD8; }
+    .model-card-info { display: flex; flex-direction: column; gap: 4px; }
+    .model-card-title { font-size: 16px; font-weight: 700; color: #0F1114; }
+    .model-card-desc { font-size: 14px; color: #64748B; line-height: 1.57; }
+
+    .model-card-fields {
+      display: flex; gap: 16px;
+    }
+    .model-field { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .model-field-label { font-size: 14px; font-weight: 600; color: #0F1114; }
+    .model-select {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      background: #FFF; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; color: #0F1114; cursor: pointer;
+      appearance: none;
+      background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      padding-right: 32px;
+    }
+    .model-select.empty { color: #94A3B8; }
+
+    /* ── Warning ── */
+    .model-warning {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 8px;
+      font-size: 13px; color: #9A3412; line-height: 1.5;
+    }
+    .model-warning i { font-size: 16px; color: #F59E0B; flex-shrink: 0; }
+
+    /* ── Flowpilot FAB ── */
+    .flowpilot-fab {
+      position: fixed; bottom: 16px; right: 24px; width: 81px; height: 81px;
+      cursor: pointer; z-index: 101;
+    }
+    .flowpilot-fab img { width: 81px; height: 81px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/flowx-header-logo.svg" alt="FLOWX.AI">
+    </div>
+
+    <div class="sidebar-env">
+      <span class="env-label">SANDBOX</span>
+      <div class="env-select">
+        <span>Marketing Dev</span>
+        <i class="ph ph-caret-down"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <a class="nav-item" href="#" data-nav><i class="ph ph-folder-simple"></i> Projects</a>
+        <a class="nav-item" href="#" data-nav><i class="ph ph-books"></i> Libraries</a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-expandable">
+          <a class="nav-item" href="#" data-nav><i class="ph ph-brain"></i> AI Settings</a>
+          <div class="nav-sub-list">
+            <a class="nav-sub-item" href="#" data-nav>LLM Providers</a>
+            <a class="nav-sub-item active" href="#">Defaults & Fallbacks</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-expandable">
+          <a class="nav-item" href="#" data-nav><i class="ph ph-compass-tool"></i> Design Assets</a>
+          <div class="nav-sub-list">
+            <a class="nav-sub-item" href="#" data-nav>Themes</a>
+            <a class="nav-sub-item" href="#" data-nav>Fonts</a>
+            <a class="nav-sub-item" href="#" data-nav>Global Media Gallery</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-expandable">
+          <a class="nav-item" href="#" data-nav><i class="ph ph-users"></i> Access Management</a>
+          <div class="nav-sub-list">
+            <a class="nav-sub-item" href="#" data-nav>Users</a>
+            <a class="nav-sub-item" href="#" data-nav>Groups</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <a class="nav-item" href="#" data-nav><i class="ph ph-gauge"></i> Platform Status</a>
+        <a class="nav-item" href="#" data-nav><i class="ph ph-clock-counter-clockwise"></i> Audit Logs</a>
+        <a class="nav-item" href="#" data-nav><i class="ph ph-gear"></i> Organization Settings</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">MG</div>
+      <div>
+        <div class="footer-name">Madalina Gheorghiu</div>
+        <div class="footer-email">madalina.gheorghiu@flowx.ai</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <div class="main">
+
+    <!-- Title Card -->
+    <div class="title-card">
+      <div class="title-heading">Defaults & Fallbacks</div>
+      <div class="title-desc">Configure which model handles each operation type by default, and which one steps in if it's unavailable. Process designers can also override models per-node in the workflow editor</div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab" data-nav>Development Environments</div>
+        <div class="tab active">Testing Environments</div>
+        <div class="tab" data-nav>Production Environments</div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="cards-grid">
+
+        <!-- Text Generation -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div class="model-card-icon"><i class="ph ph-text-aa"></i></div>
+            <div class="model-card-info">
+              <div class="model-card-title">Text Generation</div>
+              <div class="model-card-desc">Text operations (summarization, translation, extraction), data operations (enrichment, generation, transformation), custom agents, and intent.</div>
+            </div>
+          </div>
+          <div class="model-card-fields">
+            <div class="model-field">
+              <span class="model-field-label">Default Model</span>
+              <select class="model-select field-select" data-field="text-gen-default">
+                <option selected>OpenAI gpt-4o</option>
+                <option>OpenAI gpt-4o-turbo</option>
+                <option>Claude Opus 4.6</option>
+              </select>
+            </div>
+            <div class="model-field">
+              <span class="model-field-label">Fallback Model</span>
+              <select class="model-select field-select" data-field="text-gen-fallback">
+                <option>OpenAI gpt-4o</option>
+                <option selected>OpenAI gpt-4o-turbo</option>
+                <option>Claude Opus 4.6</option>
+              </select>
+            </div>
+          </div>
+          <div class="model-warning">
+            <i class="ph ph-warning"></i>
+            If the default and fallback use the same provider, both may fail during an outage.
+          </div>
+        </div>
+
+        <!-- Image Understanding -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div class="model-card-icon"><i class="ph ph-image"></i></div>
+            <div class="model-card-info">
+              <div class="model-card-title">Image Understanding</div>
+              <div class="model-card-desc">AI image nodes — image description and image analysis. Only models with vision capability are shown.</div>
+            </div>
+          </div>
+          <div class="model-card-fields">
+            <div class="model-field">
+              <span class="model-field-label">Default Model</span>
+              <select class="model-select field-select" data-field="image-default">
+                <option selected>OpenAI gpt-4o</option>
+                <option>Claude Opus 4.6</option>
+              </select>
+            </div>
+            <div class="model-field">
+              <span class="model-field-label">Fallback Model</span>
+              <select class="model-select field-select" data-field="image-fallback">
+                <option>OpenAI gpt-4o</option>
+                <option selected>Claude Opus 4.6</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Embeddings -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div class="model-card-icon"><i class="ph ph-graph"></i></div>
+            <div class="model-card-info">
+              <div class="model-card-title">Embeddings</div>
+              <div class="model-card-desc">Knowledge base indexing and context retrieval (RAG). Used by context retrieval nodes in workflows.</div>
+            </div>
+          </div>
+          <div class="model-card-fields">
+            <div class="model-field">
+              <span class="model-field-label">Default Model</span>
+              <select class="model-select field-select empty" data-field="embed-default">
+                <option selected>No available models</option>
+              </select>
+            </div>
+            <div class="model-field">
+              <span class="model-field-label">Fallback Model</span>
+              <select class="model-select field-select empty" data-field="embed-fallback">
+                <option selected>No available models</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document / OCR -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div class="model-card-icon"><i class="ph ph-file-text"></i></div>
+            <div class="model-card-info">
+              <div class="model-card-title">Document / OCR</div>
+              <div class="model-card-desc">AI document nodes — document generation, extraction, understanding, and text extraction from documents.</div>
+            </div>
+          </div>
+          <div class="model-card-fields">
+            <div class="model-field">
+              <span class="model-field-label">Default Model</span>
+              <select class="model-select field-select" data-field="doc-default">
+                <option selected>OpenAI gpt-4o</option>
+                <option>Claude Opus 4.6</option>
+              </select>
+            </div>
+            <div class="model-field">
+              <span class="model-field-label">Fallback Model</span>
+              <select class="model-select field-select" data-field="doc-fallback">
+                <option>OpenAI gpt-4o</option>
+                <option selected>Claude Opus 4.6</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Build -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div class="model-card-icon"><i class="ph ph-code"></i></div>
+            <div class="model-card-info">
+              <div class="model-card-title">Build</div>
+              <div class="model-card-desc">Write code, build BPMN processes, generate configs, and scaffold automations.</div>
+            </div>
+          </div>
+          <div class="model-card-fields">
+            <div class="model-field">
+              <span class="model-field-label">Default Model</span>
+              <select class="model-select field-select" data-field="build-default">
+                <option selected>OpenAI gpt-4o</option>
+                <option>Claude Opus 4.6</option>
+              </select>
+            </div>
+            <div class="model-field">
+              <span class="model-field-label">Fallback Model</span>
+              <select class="model-select field-select empty" data-field="build-fallback">
+                <option selected>No available models</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Banner -->
+  <div class="save-banner">
+    <div class="save-banner-unsaved">
+      <span class="save-banner-text">Careful , you have unsaved changes!</span>
+      <div class="save-banner-actions">
+        <button class="btn-reset">Reset</button>
+        <button class="btn-save">Save Changes</button>
+      </div>
+    </div>
+    <div class="save-banner-saved">
+      <img src="assets/check-circle.svg" alt="Saved" class="saved-icon">
+      <span class="saved-text">Saved</span>
+    </div>
+  </div>
+
+  <!-- Flowpilot FAB -->
+  <div class="flowpilot-fab">
+    <img src="assets/flowpilot.svg" alt="Flowpilot">
+  </div>
+
+  <!-- ── Scripts ── -->
+  <script>
+    window.PAGE_NAV_PAGES = [
+      { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
+      { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+      { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
+      { id: 'branding', label: 'Branding', href: 'branding.html' },
+      { id: 'model-selection', label: 'Model Selection', href: 'model-selection.html' },
+    ];
+    window.PAGE_NAV_CURRENT = 'model-selection';
+  </script>
+  <script src="shared/save-widget.js"></script>
+  <script src="shared/page-nav.js"></script>
+</body>
+</html>
