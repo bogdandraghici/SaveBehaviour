@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Query - Find Client</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/save-widget.css">
+  <link rel="stylesheet" href="shared/page-nav.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #F1F3F6;
+      min-height: 100vh;
+    }
+
+    /* ── App Header (reused) ── */
+    .app-header {
+      background: #2A313A;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+    .app-header-left { display: flex; align-items: center; gap: 12px; }
+    .logo { padding: 0 2px; display: flex; align-items: center; }
+    .logo img { height: 24px; width: auto; }
+    .project-info { display: flex; align-items: center; gap: 8px; }
+    .project-icon img { width: 18px; height: 18px; border-radius: 8px; }
+    .project-name { font-weight: 700; font-size: 14px; color: #FFF; }
+    .branch-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: #0F1114; border-radius: 8px; padding: 4px 8px;
+    }
+    .branch-tags { display: flex; align-items: center; gap: 8px; }
+    .branch-dot { width: 16px; height: 16px; border-radius: 100px; background: #002D5B; border: 1px dashed #3389E0; }
+    .tag { display: inline-flex; align-items: center; padding: 0 4px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
+    .tag-main { background: rgba(0,59,119,0.3); border: 1px solid #3389E0; color: #FFF; }
+    .tag-draft { border: 1px dashed #E66119; color: #FD8949; }
+    .new-version-text { font-size: 12px; color: #FFF; opacity: 0.8; }
+    .icon-btn-dark {
+      width: 24px; height: 24px; background: #2A313A; border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .icon-btn-dark img { width: 14px; height: 14px; }
+    .submit-btn {
+      display: flex; align-items: center; gap: 4px; background: #2A313A;
+      border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; padding: 4px 8px;
+      color: #FFF; font-size: 12px; font-weight: 600; cursor: pointer; height: 24px;
+    }
+    .submit-btn img { width: 12px; height: 12px; }
+    .segmented-control {
+      display: flex; align-items: center; gap: 8px; background: #191D23;
+      border-radius: 8px; padding: 4px; height: 32px;
+    }
+    .segment {
+      display: flex; align-items: center; justify-content: center; padding: 0 16px;
+      height: 100%; border-radius: 4px; font-size: 12px; color: #FFF; cursor: pointer;
+    }
+    .segment.active {
+      background: #006BD8; font-weight: 600;
+      box-shadow: 0px 1px 4px -1px rgba(0,0,0,0.12), 0px 2px 8px -2px rgba(0,0,0,0.08);
+    }
+    .segment:not(.active) { padding: 0 8px; border-radius: 6px; }
+
+    /* ── Resource Sub-Header ── */
+    .resource-subheader {
+      background: #475263; display: flex; align-items: center;
+      gap: 24px; padding: 4px 0 4px 80px;
+    }
+    .resource-subheader-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      flex: 1; padding-right: 16px;
+    }
+    .breadcrumb-area { display: flex; align-items: center; gap: 16px; }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center; padding: 6px;
+      border: 1px solid rgba(166,176,190,0.3); border-radius: 8px; background: transparent; cursor: pointer;
+    }
+    .back-btn img { width: 12px; height: 12px; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .breadcrumb-dim { color: #FFF; opacity: 0.7; }
+    .breadcrumb-sep { color: #FFF; opacity: 0.5; }
+    .breadcrumb-bold { color: #FFF; font-weight: 700; }
+    .dots-btn {
+      display: flex; align-items: center; justify-content: center; padding: 6px;
+      border: 1px solid rgba(166,176,190,0.3); border-radius: 8px; background: transparent; cursor: pointer;
+    }
+    .dots-btn img { width: 12px; height: 12px; }
+
+    /* ── Title Card ── */
+    .title-card {
+      background: #FFF; border-radius: 16px; box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
+      padding: 14px 24px; display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .title-left { display: flex; gap: 16px; align-items: center; }
+    .title-method { font-size: 19px; font-weight: 700; color: #339980; }
+    .title-name { font-size: 19px; font-weight: 700; color: #000; }
+    .title-desc { font-size: 12px; color: #64748B; }
+    .title-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-test {
+      padding: 6px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      background: #FFF; color: #006BD8; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-page-save {
+      padding: 6px 12px; border: none; border-radius: 8px;
+      background: #006BD8; color: #FFF; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    /* ── Page Layout ── */
+    .page-content { padding: 24px; padding-bottom: 120px; }
+    .two-panel { display: flex; gap: 24px; }
+    .panel-left { width: 795px; flex-shrink: 0; }
+    .panel-right { flex: 1; }
+
+    /* ── Section Headers ── */
+    .section-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .section-title-sm { font-size: 14px; font-weight: 700; color: #000; }
+    .section-subtitle { font-size: 12px; color: #64748B; }
+    .section-info { display: flex; align-items: center; gap: 4px; }
+    .section-info img { width: 14px; height: 14px; opacity: 0.6; }
+
+    /* ── Parameters Table ── */
+    .params-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      background: #FFF; border: 0.5px solid #CBD1DB; border-radius: 16px;
+      overflow: hidden;
+    }
+    .params-table th {
+      text-align: left; font-size: 12px; font-weight: 600; color: #64748B;
+      padding: 10px 16px; background: #F7F8F9; border-bottom: 1px solid #E3E8ED;
+    }
+    .params-table td {
+      font-size: 13px; color: #0F1114; padding: 8px 16px;
+      border-bottom: 1px solid #F1F3F6;
+    }
+    .params-table tr:last-child td { border-bottom: none; }
+    .params-table .cell-input {
+      background: transparent; border: none; font-family: 'Open Sans', sans-serif;
+      font-size: 13px; color: #0F1114; width: 100%; outline: none;
+    }
+    .params-table .cell-select {
+      background: transparent; border: none; font-family: 'Open Sans', sans-serif;
+      font-size: 13px; color: #0F1114; outline: none; cursor: pointer;
+      appearance: none; padding-right: 16px;
+      background-image: url('assets/caret-down.svg'); background-repeat: no-repeat;
+      background-position: right center; background-size: 12px;
+    }
+    .row-delete {
+      width: 28px; height: 28px; border: none; background: transparent;
+      cursor: pointer; opacity: 0.4; font-size: 16px; color: #64748B;
+    }
+    .row-delete:hover { opacity: 1; }
+
+    /* ── Query Arguments Panel ── */
+    .qa-section { margin-bottom: 24px; }
+    .qa-label {
+      font-size: 12px; font-weight: 600; color: #006BD8;
+      margin-bottom: 8px; display: block;
+    }
+
+    /* ── Filter rows ── */
+    .filter-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .filter-row .field-input, .filter-row .field-select {
+      max-width: none;
+    }
+    .filter-field {
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      outline: none; background: #FFF;
+    }
+    .filter-field.wide { flex: 1; }
+    .filter-field.medium { width: 120px; }
+    .filter-field.narrow { width: 90px; }
+    .filter-type {
+      font-family: 'Open Sans', sans-serif; font-size: 12px; color: #64748B;
+      background: #F1F3F6; border: none; border-radius: 4px; padding: 5px 8px;
+      width: 48px; text-align: center;
+    }
+    .filter-suffix {
+      font-size: 11px; color: #94A3B8; background: #F7F8F9;
+      border-radius: 4px; padding: 2px 6px;
+    }
+    .filter-actions { display: flex; align-items: center; gap: 4px; }
+    .filter-icon-btn {
+      width: 24px; height: 24px; border: none; background: transparent;
+      cursor: pointer; opacity: 0.4; font-size: 14px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .filter-icon-btn:hover { opacity: 1; }
+
+    /* ── Add buttons ── */
+    .add-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
+      color: #006BD8; background: none; border: none; cursor: pointer;
+      padding: 4px 0;
+    }
+    .delete-group-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
+      color: #E04B4B; background: none; border: none; cursor: pointer;
+      padding: 4px 0;
+    }
+    .filter-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 6px;
+    }
+
+    /* ── Projection / Sort rows ── */
+    .kv-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .kv-field {
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      outline: none; background: #FFF; flex: 1;
+    }
+    .kv-select {
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      outline: none; background: #FFF; width: 130px; cursor: pointer;
+      appearance: none; background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right 10px center;
+      background-size: 12px; padding-right: 28px;
+    }
+
+    /* ── Limit / Skip row ── */
+    .limit-row {
+      display: flex; gap: 16px; margin-top: 16px;
+    }
+    .limit-group { display: flex; flex-direction: column; gap: 4px; }
+    .limit-label { font-size: 13px; font-weight: 600; color: #0F1114; }
+    .limit-input {
+      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #0F1114;
+      border: 1px solid #E3E8ED; border-radius: 6px; padding: 5px 10px;
+      outline: none; background: #FFF; width: 80px;
+    }
+
+    /* ── Flowpilot FAB ── */
+    .flowpilot-fab {
+      position: fixed; bottom: 30px; right: 40px; width: 41px;
+      background: #2A313A; border-radius: 99px; padding: 9px 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      box-shadow: 0 0 20px rgba(15,17,20,0.16); cursor: pointer; z-index: 101;
+    }
+    .flowpilot-fab img { width: 18px; height: 23px; }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="app-header-left">
+      <div class="logo"><img src="assets/logo.svg" alt="Logo"></div>
+      <div class="project-info">
+        <div class="project-icon"><img src="assets/project-icon.svg" alt="Project"></div>
+        <span class="project-name">[Project]  Mortgage</span>
+      </div>
+      <div class="branch-bar">
+        <div class="branch-tags">
+          <div class="branch-dot"></div>
+          <span class="tag tag-main">main</span>
+          <span class="tag tag-draft">draft</span>
+        </div>
+        <span class="new-version-text">New version</span>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button class="icon-btn-dark"><img src="assets/new-version-icon.svg" alt=""></button>
+          <button class="submit-btn"><img src="assets/submit-icon.svg" alt=""><span>Submit Changes to Version</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="segmented-control">
+      <div class="segment active">Config</div>
+      <div class="segment">Runtime</div>
+    </div>
+  </header>
+
+  <!-- Resource Sub-Header -->
+  <nav class="resource-subheader">
+    <div class="resource-subheader-inner">
+      <div class="breadcrumb-area">
+        <button class="back-btn"><img src="assets/arrow-left.svg" alt="Back"></button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-dim">Data Sources</span>
+          <span class="breadcrumb-sep">\</span>
+          <span class="breadcrumb-dim">ClientInfo</span>
+          <span class="breadcrumb-sep">\</span>
+          <span class="breadcrumb-bold">Find Client</span>
+        </div>
+      </div>
+      <button class="dots-btn"><img src="assets/dots-menu.svg" alt="More"></button>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="page-content">
+    <!-- Title Card -->
+    <div class="title-card">
+      <div class="title-left">
+        <span class="title-method">find</span>
+        <div>
+          <div class="title-name">Find Client</div>
+          <div class="title-desc">Finds clients</div>
+        </div>
+      </div>
+      <div class="title-actions">
+        <button class="btn-test" data-nav>Test</button>
+        <button class="btn-page-save" data-nav>Save</button>
+      </div>
+    </div>
+
+    <!-- Two-panel layout -->
+    <div class="two-panel">
+      <!-- Left: Parameters -->
+      <div class="panel-left">
+        <div class="section-header">
+          <div>
+            <span class="section-title-sm">Parameters</span>
+            <span class="section-subtitle" style="margin-left:8px;">
+              Define parameters for your arguments, in workflows, assign values to these parameters using node input paths
+            </span>
+          </div>
+        </div>
+        <table class="params-table">
+          <thead>
+            <tr>
+              <th>Params</th>
+              <th>Type</th>
+              <th>Default Value</th>
+              <th>Description</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="cell-input field-input" value="startDate"></td>
+              <td>
+                <select class="cell-select field-select">
+                  <option selected>Date</option>
+                  <option>String</option>
+                  <option>Number</option>
+                </select>
+              </td>
+              <td><input class="cell-input field-input" value="11.01.2020"></td>
+              <td><input class="cell-input field-input" value="client first name"></td>
+              <td><button class="row-delete">×</button></td>
+            </tr>
+            <tr>
+              <td><input class="cell-input field-input" value="param2"></td>
+              <td>
+                <select class="cell-select field-select">
+                  <option>Date</option>
+                  <option selected>String</option>
+                  <option>Number</option>
+                </select>
+              </td>
+              <td><input class="cell-input field-input" value="Doe"></td>
+              <td><input class="cell-input field-input" value="client last name"></td>
+              <td><button class="row-delete">×</button></td>
+            </tr>
+            <tr>
+              <td><input class="cell-input field-input" value="param3"></td>
+              <td>
+                <select class="cell-select field-select">
+                  <option>Date</option>
+                  <option>String</option>
+                  <option selected>Number</option>
+                </select>
+              </td>
+              <td><input class="cell-input field-input" value="25"></td>
+              <td><input class="cell-input field-input" value="client age"></td>
+              <td><button class="row-delete">×</button></td>
+            </tr>
+            <tr>
+              <td><input class="cell-input field-input" value="param4"></td>
+              <td>
+                <select class="cell-select field-select">
+                  <option>Date</option>
+                  <option>String</option>
+                  <option>Number</option>
+                  <option selected>Array (number)</option>
+                </select>
+              </td>
+              <td><input class="cell-input field-input" value="25"></td>
+              <td><input class="cell-input field-input" value="client age"></td>
+              <td><button class="row-delete">×</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right: Query Arguments -->
+      <div class="panel-right">
+        <div class="section-header">
+          <div>
+            <span class="section-title-sm">Query Arguments</span>
+            <div class="section-subtitle">Reference parameters in query arguments using ${}. These will be used when the operation runs</div>
+          </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="qa-section">
+          <span class="qa-label">Filter</span>
+          <div class="filter-row">
+            <input class="filter-type field-input" value="And" readonly>
+            <input class="filter-field wide field-input" value="client.firstName">
+            <span class="filter-suffix">string</span>
+            <select class="filter-field medium field-select">
+              <option selected>Contains</option>
+              <option>Equals</option>
+            </select>
+            <input class="filter-field field-input" value="Popescu">
+            <span class="filter-suffix">string</span>
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <div class="filter-row">
+            <input class="filter-type field-input" value="And" readonly>
+            <input class="filter-field wide field-input" value="client.clientDateOfBirth">
+            <select class="filter-field medium field-select">
+              <option selected>Greater than</option>
+              <option>Less than</option>
+            </select>
+            <input class="filter-field field-input" value="${startDate}">
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <div class="filter-row">
+            <input class="filter-type field-input" value="And" readonly>
+            <input class="filter-field wide field-input" value="client.clientDateOfBirth">
+            <select class="filter-field medium field-select">
+              <option>Greater than</option>
+              <option selected>Lower than</option>
+            </select>
+            <input class="filter-field field-input" value="${endDate}">
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <div class="filter-footer">
+            <div>
+              <button class="add-btn" data-nav>+ New Filter</button>
+              <button class="add-btn" data-nav style="margin-left:16px;">+ New Group</button>
+            </div>
+            <button class="delete-group-btn" data-nav>Delete Group</button>
+          </div>
+        </div>
+
+        <!-- Projection -->
+        <div class="qa-section">
+          <span class="qa-label">Projection</span>
+          <div class="kv-row">
+            <input class="kv-field field-input" value="client.clientDateOfBirth">
+            <select class="kv-select field-select">
+              <option selected>Include</option>
+              <option>Exclude</option>
+            </select>
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <div class="kv-row">
+            <input class="kv-field field-input" value="client.firstName">
+            <select class="kv-select field-select">
+              <option selected>Include</option>
+              <option>Exclude</option>
+            </select>
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <button class="add-btn" data-nav>+ Add Key</button>
+        </div>
+
+        <!-- Sort -->
+        <div class="qa-section">
+          <span class="qa-label">Sort</span>
+          <div class="kv-row">
+            <input class="kv-field field-input" value="client.clientDateOfBirth">
+            <select class="kv-select field-select">
+              <option selected>Ascending</option>
+              <option>Descending</option>
+            </select>
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <div class="kv-row">
+            <input class="kv-field field-input" value="client.firstName">
+            <select class="kv-select field-select">
+              <option>Ascending</option>
+              <option selected>Descending</option>
+            </select>
+            <div class="filter-actions">
+              <button class="filter-icon-btn">×</button>
+            </div>
+          </div>
+          <button class="add-btn" data-nav>+ Add Key</button>
+        </div>
+
+        <!-- Limit / Skip -->
+        <div class="limit-row">
+          <div class="limit-group">
+            <label class="limit-label">Limit</label>
+            <input class="limit-input field-input" value="50">
+          </div>
+          <div class="limit-group">
+            <label class="limit-label">Skip</label>
+            <input class="limit-input field-input" value="0">
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Save Banner -->
+  <div class="save-banner">
+    <div class="save-banner-unsaved">
+      <span class="save-banner-text">Careful , you have unsaved changes!</span>
+      <div class="save-banner-actions">
+        <button class="btn-reset">Reset</button>
+        <button class="btn-save">Save Changes</button>
+      </div>
+    </div>
+    <div class="save-banner-saved">
+      <img src="assets/check-circle.svg" alt="Saved" class="saved-icon">
+      <span class="saved-text">Saved</span>
+    </div>
+  </div>
+
+  <!-- Flowpilot FAB -->
+  <div class="flowpilot-fab">
+    <img src="assets/flowpilot.svg" alt="Flowpilot">
+  </div>
+
+  <script>
+    window.PAGE_NAV_PAGES = [
+      { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
+      { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+    ];
+    window.PAGE_NAV_CURRENT = 'database-query';
+  </script>
+  <script src="shared/save-widget.js"></script>
+  <script src="shared/page-nav.js"></script>
+</body>
+</html>
