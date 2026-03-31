@@ -22,6 +22,8 @@
     { id: 'light', label: 'Light' },
   ];
 
+  const savedVariant = localStorage.getItem('widget-variant') || 'dark';
+
   // ── Build toggle button ──
   const toggle = document.createElement('button');
   toggle.className = 'page-nav-toggle';
@@ -67,7 +69,7 @@
 
   VARIANTS.forEach(v => {
     const btn = document.createElement('button');
-    btn.className = 'page-nav-variant' + (v.id === 'dark' ? ' active' : '');
+    btn.className = 'page-nav-variant' + (v.id === savedVariant ? ' active' : '');
     btn.dataset.variant = v.id;
     btn.title = v.label;
     btn.innerHTML = `<span class="page-nav-variant-swatch" data-variant="${v.id}"></span>`;
@@ -76,15 +78,20 @@
 
   panel.appendChild(varContainer);
 
-  // Spec link
+  // Specs section
   const specDivider = document.createElement('div');
   specDivider.className = 'page-nav-divider';
   panel.appendChild(specDivider);
 
+  const specTitle = document.createElement('div');
+  specTitle.className = 'page-nav-title';
+  specTitle.textContent = 'Specs';
+  panel.appendChild(specTitle);
+
   const specLink = document.createElement('a');
   specLink.className = 'page-nav-link';
   specLink.href = 'widget-spec.html';
-  specLink.innerHTML = '<span class="page-nav-dot"></span>Widget Spec';
+  specLink.innerHTML = '<span class="page-nav-dot"></span>Save Widget Behaviour';
   panel.appendChild(specLink);
 
   document.body.appendChild(toggle);
@@ -97,8 +104,17 @@
     panel.classList.toggle('open');
   });
 
-  // ── Variant switching ──
+  // ── Apply saved variant on load ──
   const banner = document.querySelector('.save-banner');
+  if (savedVariant !== 'dark') {
+    if (banner) banner.setAttribute('data-variant', savedVariant);
+    document.querySelectorAll('.widget-preview').forEach(el => {
+      el.classList.remove('dark', 'blue', 'light');
+      el.classList.add(savedVariant);
+    });
+  }
+
+  // ── Variant switching ──
 
   varContainer.addEventListener('click', (e) => {
     const btn = e.target.closest('.page-nav-variant');
@@ -109,6 +125,9 @@
     // Update active state in menu
     varContainer.querySelectorAll('.page-nav-variant').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+
+    // Persist selection
+    localStorage.setItem('widget-variant', variant);
 
     // Apply variant to banner
     if (banner) {
