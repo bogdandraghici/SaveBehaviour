@@ -1,0 +1,98 @@
+/* ── Floating Page Navigation ── */
+.page-nav-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #2A313A;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.page-nav-toggle:hover {
+  background: #3B4453;
+}
+
+.page-nav-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.page-nav-panel {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  z-index: 200;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.12), 0px 1px 4px rgba(0, 0, 0, 0.06);
+  padding: 8px 0;
+  min-width: 220px;
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.page-nav-panel.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.page-nav-title {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94A3B8;
+  padding: 8px 16px 4px;
+}
+
+.page-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2A313A;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.page-nav-link:hover {
+  background: #F1F3F6;
+}
+
+.page-nav-link.active {
+  color: #006BD8;
+  font-weight: 600;
+  background: rgba(0, 107, 216, 0.06);
+}
+
+.page-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #C4CDD6;
+  flex-shrink: 0;
+}
+
+.page-nav-link.active .page-nav-dot {
+  background: #006BD8;
+}
