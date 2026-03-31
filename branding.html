@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Branding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2"></script>
+  <link rel="stylesheet" href="shared/save-widget.css">
+  <link rel="stylesheet" href="shared/page-nav.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #F1F3F6;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 290px;
+      background: #FFF;
+      border-right: 1px solid #E3E8ED;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      padding: 24px 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-logo img { width: 80%; height: auto; }
+    .sidebar-org {
+      padding: 0 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #64748B;
+    }
+    .sidebar-org-icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #F1F3F6; display: flex; align-items: center;
+      justify-content: center; font-size: 14px; color: #64748B;
+      flex-shrink: 0;
+    }
+    .sidebar-org strong { color: #0F1114; font-weight: 600; }
+
+    .sidebar-nav { flex: 1; padding: 0 8px; display: flex; flex-direction: column; gap: 23px; }
+
+    .nav-group { display: flex; flex-direction: column; gap: 2px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 6px; font-size: 14px;
+      font-weight: 600; color: #2A313A; cursor: pointer; text-decoration: none;
+      line-height: 1.71;
+    }
+    .nav-item:hover { background: #F1F3F6; }
+    .nav-item.active {
+      background: #E6F0FB; color: #006BD8;
+    }
+    .nav-item i { font-size: 24px; width: 24px; text-align: center; color: #64748B; }
+    .nav-item.active i { color: #006BD8; }
+
+    .nav-expandable { display: flex; flex-direction: column; padding-bottom: 8px; }
+    .nav-sub-list { display: flex; flex-direction: column; gap: 2px; padding-left: 40px; }
+    .nav-sub-item {
+      display: flex; align-items: center;
+      padding: 4px 16px 4px 8px; border-radius: 10px; font-size: 12px;
+      font-weight: 400; color: #2A313A; cursor: pointer; text-decoration: none;
+      line-height: 1.33;
+    }
+    .nav-sub-item:hover { background: #F1F3F6; }
+    .nav-sub-item.active {
+      background: #E6F0FB; color: #006BD8; font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px; border-top: 1px solid #E3E8ED;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #FEB913; color: #0F1114; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .footer-name { font-size: 13px; font-weight: 600; color: #0F1114; }
+    .footer-email { font-size: 11px; color: #64748B; }
+
+    /* ── Main Content ── */
+    .main {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-y: auto;
+    }
+
+    /* ── Title Card ── */
+    .title-card {
+      background: #FFF; border-radius: 16px;
+      box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
+      padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .title-heading { font-size: 28px; font-weight: 700; color: #000; }
+    .toggle-row { display: flex; align-items: center; gap: 8px; }
+    .toggle-label { font-size: 14px; color: #0F1114; }
+
+    /* Switch */
+    .switch {
+      width: 42px; height: 24px; border-radius: 20px;
+      background: #CBD1DB; position: relative; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .switch::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #FFF; transition: left 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .switch.on { background: #006BD8; }
+    .switch.on::after { left: 21px; }
+
+    /* ── Content Card ── */
+    .content-card {
+      background: #FFF; border-radius: 16px;
+      box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.21);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      flex: 1;
+    }
+
+    /* ── Section ── */
+    .section { display: flex; flex-direction: column; gap: 24px; }
+    .section-header-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .section-title { font-size: 14px; font-weight: 700; color: #000; }
+    .section-desc { font-size: 12px; color: #64748B; line-height: 1.5; }
+
+    .section-body {
+      border: 1px solid #E3E8ED; border-radius: 16px;
+      padding: 24px 16px;
+    }
+
+    /* ── Color Fields Row ── */
+    .fields-row {
+      display: flex; gap: 16px;
+    }
+
+    .field-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .field-label-text { font-size: 14px; font-weight: 600; color: #0F1114; }
+
+    .color-input-wrap {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid #E3E8ED; border-radius: 8px;
+      padding: 8px 12px; background: #FFF;
+    }
+    .color-swatch {
+      width: 20px; height: 20px; border-radius: 4px;
+      border: 1px solid #E3E8ED; flex-shrink: 0;
+    }
+    .color-prefix { font-size: 14px; color: #64748B; }
+    .color-value {
+      flex: 1; border: none; outline: none; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; color: #0F1114; background: transparent;
+    }
+
+    /* ── URL Input ── */
+    .url-input-wrap {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid #E3E8ED; border-radius: 8px;
+      padding: 8px 12px; background: #FFF;
+    }
+    .url-input-wrap i { font-size: 16px; color: #64748B; }
+    .url-input {
+      flex: 1; border: none; outline: none; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; color: #0F1114; background: transparent;
+    }
+
+    /* ── Number Input with suffix ── */
+    .num-input-wrap {
+      display: flex; align-items: center; gap: 4px;
+      border: 1px solid #E3E8ED; border-radius: 8px;
+      padding: 8px 12px; background: #FFF;
+    }
+    .num-input {
+      flex: 1; border: none; outline: none; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; color: #0F1114; background: transparent; width: 60px;
+    }
+    .num-suffix { font-size: 14px; color: #64748B; }
+
+    /* ── Info icon ── */
+    .info-icon { font-size: 14px; color: #64748B; cursor: help; }
+
+    /* ── Background Color + Shadow row ── */
+    .bg-shadow-section {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: #0F1114;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: #006BD8;
+    }
+
+    /* ── Save button (at top-right of title area) ── */
+    .btn-save-top {
+      padding: 6px 12px; border: none; border-radius: 8px;
+      background: #006BD8; color: #FFF; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    /* ── Flowpilot FAB ── */
+    .flowpilot-fab {
+      position: fixed; bottom: 16px; right: 24px; width: 81px; height: 81px;
+      cursor: pointer; z-index: 101;
+    }
+    .flowpilot-fab img { width: 81px; height: 81px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/flowx-header-logo.svg" alt="FLOWX.AI">
+    </div>
+    <div class="sidebar-org">
+      <div class="sidebar-org-icon"><i class="ph ph-network"></i></div>
+      <span><strong>Organization:</strong> myorganisation6</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <a class="nav-item" href="#" data-nav><i class="ph ph-flag-pennant"></i> Solutions</a>
+        <a class="nav-item" href="#" data-nav><i class="ph ph-chart-line-up"></i> Usage Stats</a>
+        <a class="nav-item" href="#" data-nav><i class="ph ph-square"></i> Workspaces</a>
+        <div class="nav-expandable">
+          <a class="nav-item" href="#" data-nav><i class="ph ph-compass-tool"></i> Design Assets</a>
+          <div class="nav-sub-list">
+            <a class="nav-sub-item" href="#" data-nav>Fonts</a>
+            <a class="nav-sub-item active" href="#">Branding</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-expandable">
+          <a class="nav-item" href="#" data-nav><i class="ph ph-users"></i> Access Management</a>
+          <div class="nav-sub-list">
+            <a class="nav-sub-item" href="#" data-nav>Designer Users</a>
+            <a class="nav-sub-item" href="#" data-nav>Designer Roles</a>
+            <a class="nav-sub-item" href="#" data-nav>End Users</a>
+            <a class="nav-sub-item" href="#" data-nav>End Users Roles</a>
+            <a class="nav-sub-item" href="#" data-nav>End Users Groups</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-expandable">
+          <a class="nav-item" href="#" data-nav><i class="ph ph-faders"></i> Task Manager</a>
+          <div class="nav-sub-list">
+            <a class="nav-sub-item" href="#" data-nav>Out of Office</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <a class="nav-item" href="#" data-nav><i class="ph ph-gauge"></i> Platform Status</a>
+        <a class="nav-item" href="#" data-nav><i class="ph ph-clock-counter-clockwise"></i> Audit Logs</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">MG</div>
+      <div>
+        <div class="footer-name">Madalina Gheorghiu</div>
+        <div class="footer-email">madalina.gheorghiu@flowx.ai</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <div class="main">
+
+    <!-- Title Card -->
+    <div class="title-card">
+      <div class="title-heading">Branding</div>
+      <div class="toggle-row">
+        <div class="switch on" id="customizeToggle"></div>
+        <span class="toggle-label">Customize Branding</span>
+      </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card" id="contentCard">
+
+      <!-- Global Colors Section -->
+      <div class="section">
+        <div class="section-header-row">
+          <div>
+            <div class="section-title">Global Colors</div>
+            <div class="section-desc">Customize the color palette to match the Organization's Branding in Generic Container App</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="fields-row">
+            <!-- Page Background -->
+            <div class="field-group">
+              <span class="field-label-text">Page Background</span>
+              <div class="color-input-wrap">
+                <div class="color-swatch" id="swatchBg" style="background: #F7F7F7;"></div>
+                <span class="color-prefix">#</span>
+                <input type="text" class="color-value field-input" data-field="page-bg" value="F7F7F7">
+              </div>
+            </div>
+            <!-- Primary Color -->
+            <div class="field-group">
+              <span class="field-label-text">Primary Color</span>
+              <div class="color-input-wrap">
+                <div class="color-swatch" id="swatchPrimary" style="background: #E31E24;"></div>
+                <span class="color-prefix">#</span>
+                <input type="text" class="color-value field-input" data-field="primary-color" value="E31E24">
+              </div>
+            </div>
+            <!-- Secondary Color -->
+            <div class="field-group">
+              <span class="field-label-text">Secondary Color</span>
+              <div class="color-input-wrap">
+                <div class="color-swatch" id="swatchSecondary" style="background: #717D93;"></div>
+                <span class="color-prefix">#</span>
+                <input type="text" class="color-value field-input" data-field="secondary-color" value="717D93">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header Section -->
+      <div class="section">
+        <div class="section-header-row">
+          <div>
+            <div class="section-title">Header</div>
+            <div class="section-desc">Logo, layout, and visual style for the top navigation bar</div>
+          </div>
+          <div class="toggle-row">
+            <div class="switch on" id="headerToggle"></div>
+            <span class="toggle-label">Show Header</span>
+          </div>
+        </div>
+        <div class="section-body" id="headerBody">
+          <div style="display: flex; flex-direction: column; gap: 32px;">
+
+            <!-- Logo URL -->
+            <div class="field-group">
+              <span class="field-label-text">Logo URL <i class="ph ph-info info-icon"></i></span>
+              <div class="url-input-wrap">
+                <i class="ph ph-link-simple"></i>
+                <input type="text" class="url-input field-input" data-field="logo-url" value="https://www.kiwifinance.ro/wp-content/uploads/2022/02/Kiwi-Finance-Logo.png">
+              </div>
+            </div>
+
+            <!-- Height + Padding Row -->
+            <div class="fields-row">
+              <div class="field-group">
+                <span class="field-label-text">Height</span>
+                <div class="num-input-wrap">
+                  <input type="text" class="num-input field-input" data-field="header-height" value="100">
+                  <span class="num-suffix">px</span>
+                </div>
+              </div>
+              <div class="field-group">
+                <span class="field-label-text">Padding Top</span>
+                <div class="num-input-wrap">
+                  <input type="text" class="num-input field-input" data-field="padding-top" value="24">
+                  <span class="num-suffix">px</span>
+                </div>
+              </div>
+              <div class="field-group">
+                <span class="field-label-text">Padding Bottom</span>
+                <div class="num-input-wrap">
+                  <input type="text" class="num-input field-input" data-field="padding-bottom" value="24">
+                  <span class="num-suffix">px</span>
+                </div>
+              </div>
+              <div class="field-group">
+                <span class="field-label-text">Padding Left</span>
+                <div class="num-input-wrap">
+                  <input type="text" class="num-input field-input" data-field="padding-left" value="160">
+                  <span class="num-suffix">px</span>
+                </div>
+              </div>
+              <div class="field-group">
+                <span class="field-label-text">Padding Right</span>
+                <div class="num-input-wrap">
+                  <input type="text" class="num-input field-input" data-field="padding-right" value="160">
+                  <span class="num-suffix">px</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Background Color + Shadow -->
+            <div class="bg-shadow-section">
+              <div class="field-group" style="max-width: 280px;">
+                <span class="field-label-text">Background Color</span>
+                <div class="color-input-wrap">
+                  <div class="color-swatch" id="swatchHeaderBg" style="background: #F7F7F7;"></div>
+                  <span class="color-prefix">#</span>
+                  <input type="text" class="color-value field-input" data-field="header-bg" value="F7F7F7">
+                </div>
+              </div>
+              <div class="toggle-row">
+                <div class="switch off switch-toggle" data-field="shadow"></div>
+                <span class="toggle-label">Shadow</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Save Banner -->
+  <div class="save-banner">
+    <div class="save-banner-unsaved">
+      <span class="save-banner-text">Careful , you have unsaved changes!</span>
+      <div class="save-banner-actions">
+        <button class="btn-reset">Reset</button>
+        <button class="btn-save">Save Changes</button>
+      </div>
+    </div>
+    <div class="save-banner-saved">
+      <img src="assets/check-circle.svg" alt="Saved" class="saved-icon">
+      <span class="saved-text">Saved</span>
+    </div>
+  </div>
+
+  <!-- Flowpilot FAB -->
+  <div class="flowpilot-fab">
+    <img src="assets/flowpilot.svg" alt="Flowpilot">
+  </div>
+
+  <!-- ── Scripts ── -->
+  <script>
+    window.PAGE_NAV_PAGES = [
+      { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
+      { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+      { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
+      { id: 'branding', label: 'Branding', href: 'branding.html' },
+    ];
+    window.PAGE_NAV_CURRENT = 'branding';
+  </script>
+  <script src="shared/save-widget.js"></script>
+  <script src="shared/page-nav.js"></script>
+  <script>
+    // Live color swatch updates
+    document.querySelectorAll('.color-value').forEach(function(input) {
+      var swatch = input.closest('.color-input-wrap').querySelector('.color-swatch');
+      if (swatch) {
+        input.addEventListener('input', function() {
+          var hex = input.value.replace(/[^0-9a-fA-F]/g, '');
+          if (hex.length === 3 || hex.length === 6) {
+            swatch.style.background = '#' + hex;
+          }
+        });
+      }
+    });
+
+    // Toggle: Customize Branding hides/shows the content card
+    document.getElementById('customizeToggle').addEventListener('click', function() {
+      this.classList.toggle('on');
+      document.getElementById('contentCard').style.display = this.classList.contains('on') ? '' : 'none';
+    });
+
+    // Toggle: Show Header hides/shows the header section body
+    document.getElementById('headerToggle').addEventListener('click', function() {
+      this.classList.toggle('on');
+      document.getElementById('headerBody').style.display = this.classList.contains('on') ? '' : 'none';
+    });
+  </script>
+</body>
+</html>
