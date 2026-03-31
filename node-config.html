@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node Config - LoanApplication</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2"></script>
+  <link rel="stylesheet" href="shared/save-widget.css">
+  <link rel="stylesheet" href="shared/page-nav.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #F1F3F6;
+      min-height: 100vh;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background: #2A313A; height: 56px;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 12px;
+    }
+    .app-header-left { display: flex; align-items: center; gap: 12px; }
+    .logo { padding: 0 2px; display: flex; align-items: center; }
+    .logo img { height: 24px; width: auto; }
+    .project-info { display: flex; align-items: center; gap: 8px; }
+    .project-icon img { width: 18px; height: 18px; border-radius: 8px; }
+    .project-name { font-weight: 700; font-size: 14px; color: #FFF; }
+    .branch-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: #0F1114; border-radius: 8px; padding: 4px 8px;
+    }
+    .branch-dot { width: 16px; height: 16px; border-radius: 100px; background: #3389E0; }
+    .tag { display: inline-flex; align-items: center; padding: 0 4px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
+    .tag-main { background: rgba(0,59,119,0.3); border: 1px solid #3389E0; color: #FFF; }
+    .tag-committed { border: 1px solid #10BC90; color: #FFF; }
+    .commit-text { font-size: 12px; color: #FFF; opacity: 0.8; }
+    .icon-btn-dark {
+      width: 24px; height: 24px; background: #2A313A; border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .submit-btn {
+      display: flex; align-items: center; gap: 4px; background: #2A313A;
+      border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; padding: 4px 8px;
+      color: #FFF; font-size: 12px; font-weight: 600; cursor: pointer; height: 24px;
+    }
+    .submit-btn img { width: 12px; height: 12px; }
+    .segmented-control {
+      display: flex; align-items: center; gap: 8px; background: #191D23;
+      border-radius: 8px; padding: 4px; height: 32px;
+    }
+    .segment {
+      display: flex; align-items: center; justify-content: center; padding: 0 16px;
+      height: 100%; border-radius: 4px; font-size: 12px; color: #FFF; cursor: pointer;
+    }
+    .segment.active {
+      background: #006BD8; font-weight: 600;
+      box-shadow: 0px 1px 4px -1px rgba(0,0,0,0.12), 0px 2px 8px -2px rgba(0,0,0,0.08);
+    }
+    .segment:not(.active) { padding: 0 8px; border-radius: 6px; }
+
+    /* ── Resource Sub-Header ── */
+    .resource-subheader {
+      background: #475263; display: flex; align-items: center;
+      gap: 24px; padding: 4px 0 4px 80px;
+    }
+    .resource-subheader-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      flex: 1; padding-right: 16px;
+    }
+    .breadcrumb-area { display: flex; align-items: center; gap: 16px; }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center; padding: 6px;
+      border: 1px solid rgba(166,176,190,0.3); border-radius: 8px; background: transparent; cursor: pointer;
+    }
+    .back-btn img { width: 12px; height: 12px; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .breadcrumb-dim { color: #FFF; opacity: 0.7; }
+    .breadcrumb-sep { color: #FFF; opacity: 0.5; }
+    .breadcrumb-bold { color: #FFF; font-weight: 700; }
+    .subheader-actions { display: flex; align-items: center; gap: 8px; }
+    .subheader-btn {
+      display: flex; align-items: center; gap: 4px; padding: 4px 8px;
+      border: 1px solid rgba(166,176,190,0.3); border-radius: 8px;
+      background: transparent; color: #FFF; font-size: 12px; cursor: pointer;
+    }
+    .subheader-btn i { font-size: 14px; }
+
+    /* ── Process Flow ── */
+    .process-flow {
+      background: #F7F8F9; border-bottom: 1px solid #E3E8ED;
+      padding: 0; overflow: hidden;
+    }
+    .process-flow img {
+      width: 70%; height: auto; display: block; margin: 0 auto;
+    }
+
+    /* ── Warning Bar ── */
+    .warning-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 32px; background: #FFF; border-bottom: 1px solid #E3E8ED;
+      font-size: 12px; color: #64748B;
+    }
+    .warning-bar i { font-size: 14px; }
+    .warning-bar strong { color: #0F1114; }
+
+    /* ── Config Tabs (full width) ── */
+    .config-tabs {
+      display: flex; gap: 0; padding: 0 32px;
+      background: #FFF; border-bottom: 1px solid #E3E8ED;
+    }
+    .config-tab {
+      padding: 10px 12px; font-size: 13px; font-weight: 600; color: #64748B;
+      cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .config-tab.active { color: #006BD8; border-bottom-color: #006BD8; }
+
+    /* ── Main Layout ── */
+    .main-layout {
+      display: flex; min-height: calc(100vh - 56px - 36px - 100px - 36px - 40px);
+    }
+
+    /* ── Left Sidebar (Tree Nav) ── */
+    .tree-nav {
+      width: 200px; background: #FFF; border-right: 1px solid #E3E8ED;
+      padding: 12px 0; flex-shrink: 0;
+    }
+    .tree-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 16px; font-size: 12px; color: #475263; cursor: pointer;
+    }
+    .tree-item:hover { background: #F1F3F6; }
+    .tree-item.active { color: #006BD8; font-weight: 600; background: #E6F0FB; }
+    .tree-item i { font-size: 14px; }
+    .tree-sub { padding-left: 16px; }
+
+    /* ── Right Content ── */
+    .config-content {
+      flex: 1; padding: 24px 32px 120px; overflow-y: auto;
+      background: #FFF;
+    }
+
+    /* ── Action Edit ── */
+    .action-edit-title { font-size: 20px; font-weight: 700; color: #0F1114; margin-bottom: 4px; }
+    .action-edit-id { font-size: 12px; color: #64748B; margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 13px; font-weight: 600; color: #0F1114; margin-bottom: 4px; display: block; }
+    .form-input {
+      width: 100%; padding: 8px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      font-family: 'Open Sans', sans-serif; font-size: 14px; color: #0F1114; outline: none;
+      background: #FFF;
+    }
+    .form-input::placeholder { color: #94A3B8; }
+    .form-select {
+      width: 50%; padding: 8px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      font-family: 'Open Sans', sans-serif; font-size: 14px; color: #0F1114;
+      background: #FFF; cursor: pointer; appearance: none;
+      background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
+      padding-right: 32px; outline: none;
+    }
+
+    /* ── Radio/Checkbox Row ── */
+    .option-row {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+    }
+    .option-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: #0F1114;
+    }
+    .option-item input[type="radio"],
+    .option-item input[type="checkbox"] {
+      accent-color: #006BD8; width: 16px; height: 16px;
+    }
+    .option-item.blue { color: #006BD8; font-weight: 600; }
+
+    .toggle-row-sm {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+    }
+    .toggle-label-sm { font-size: 13px; color: #0F1114; }
+    .switch-sm {
+      width: 36px; height: 20px; border-radius: 20px;
+      background: #CBD1DB; position: relative; cursor: pointer; transition: background 0.2s;
+    }
+    .switch-sm::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%; background: #FFF;
+      transition: left 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .switch-sm.on { background: #006BD8; }
+    .switch-sm.on::after { left: 18px; }
+
+    /* ── Section Divider ── */
+    .section-divider { height: 1px; background: #E3E8ED; margin: 24px 0; }
+
+    /* ── Business Rules ── */
+    .rules-title { font-size: 18px; font-weight: 700; color: #0F1114; margin-bottom: 16px; }
+    .rule-card {
+      border: 1px solid #E3E8ED; border-radius: 12px;
+      margin-bottom: 16px; overflow: hidden;
+    }
+    .rule-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-bottom: 1px solid #E3E8ED; background: #FFF;
+    }
+    .rule-title { font-size: 14px; font-weight: 700; color: #0F1114; display: flex; align-items: center; gap: 6px; }
+    .rule-title i { font-size: 14px; color: #64748B; cursor: pointer; }
+    .rule-delete { background: none; border: none; cursor: pointer; color: #64748B; font-size: 16px; }
+
+    .rule-body { padding: 16px; }
+
+    .rule-type-row {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 16px;
+    }
+
+    .rule-field { margin-bottom: 16px; }
+    .rule-field-label { font-size: 13px; font-weight: 700; color: #0F1114; margin-bottom: 4px; }
+    .rule-field-desc { font-size: 12px; color: #64748B; }
+    .rule-field-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 8px; border-bottom: 1px solid #E3E8ED;
+    }
+    .rule-field-row .rule-field-label { margin-bottom: 0; }
+    .rule-gear { background: none; border: none; cursor: pointer; color: #64748B; font-size: 16px; }
+    .rule-select-row { display: flex; align-items: center; gap: 8px; }
+    .rule-select {
+      flex: 1; padding: 8px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      font-family: 'Open Sans', sans-serif; font-size: 14px; color: #0F1114;
+      background: #FFF; cursor: pointer; appearance: none;
+      background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
+      padding-right: 32px; outline: none;
+    }
+    .rule-icon-btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid #E3E8ED; border-radius: 8px; background: #FFF; cursor: pointer; color: #64748B;
+    }
+
+    /* ── Code Editor ── */
+    .code-editor {
+      border: 1px solid #E3E8ED; border-radius: 8px; overflow: hidden; margin-top: 8px;
+    }
+    .code-toolbar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 6px 12px; background: #F7F8F9; border-bottom: 1px solid #E3E8ED;
+    }
+    .code-lang-select {
+      font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
+      color: #0F1114; border: none; background: transparent; cursor: pointer;
+      appearance: none; padding-right: 14px;
+      background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat; background-position: right center; background-size: 10px;
+      outline: none;
+    }
+    .code-test-link {
+      font-size: 12px; font-weight: 600; color: #006BD8;
+      background: none; border: none; cursor: pointer;
+    }
+    .code-sparkle { font-size: 16px; color: #FEB913; }
+    .code-body {
+      display: flex; min-height: 280px;
+    }
+    .code-lines {
+      padding: 12px 8px; background: #F7F8F9; border-right: 1px solid #E3E8ED;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94A3B8;
+      text-align: right; line-height: 1.8; user-select: none; min-width: 36px;
+    }
+    .code-text {
+      flex: 1; padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #475263;
+      line-height: 1.8; outline: none; white-space: pre;
+      background: linear-gradient(180deg, #F0F7FF 0%, #FFF 100%);
+      overflow-x: auto;
+    }
+
+    /* ── Status Bar ── */
+    .status-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 12px; background: #F7F8F9; border-top: 1px solid #E3E8ED;
+      font-size: 12px; color: #64748B;
+    }
+    .status-bar i { font-size: 14px; color: #006BD8; }
+
+    /* ── Add Rule ── */
+    .add-rule-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 0; font-size: 13px; font-weight: 600; color: #006BD8;
+      background: none; border: none; cursor: pointer;
+    }
+    .add-rule-btn i { font-size: 16px; }
+
+    /* ── Flowpilot FAB ── */
+    .flowpilot-fab {
+      position: fixed; bottom: 16px; right: 24px; width: 81px; height: 81px;
+      cursor: pointer; z-index: 101;
+    }
+    .flowpilot-fab img { width: 81px; height: 81px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── App Header ── -->
+  <header class="app-header">
+    <div class="app-header-left">
+      <div class="logo"><img src="assets/logo.svg" alt="Logo"></div>
+      <div class="project-info">
+        <div class="project-icon"><img src="assets/project-icon.svg" alt=""></div>
+        <span class="project-name">[Project]  Mortgage</span>
+      </div>
+      <div class="branch-bar">
+        <div class="branch-dot"></div>
+        <span class="tag tag-main">main</span>
+        <span class="tag tag-committed">commited</span>
+        <span class="commit-text">Fixed some bugs</span>
+        <div class="icon-btn-dark"><img src="assets/new-version-icon.svg" alt=""></div>
+        <div class="submit-btn"><img src="assets/submit-icon.svg" alt=""><span>Start New Version</span></div>
+      </div>
+    </div>
+    <div class="segmented-control">
+      <div class="segment active">Config</div>
+      <div class="segment">Runtime</div>
+    </div>
+  </header>
+
+  <!-- ── Resource Sub-Header ── -->
+  <div class="resource-subheader">
+    <div class="resource-subheader-inner">
+      <div class="breadcrumb-area">
+        <button class="back-btn"><img src="assets/arrow-left.svg" alt="Back"></button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-dim">Processes List</span>
+          <span class="breadcrumb-sep">\</span>
+          <span class="breadcrumb-bold">LoanApplication</span>
+        </div>
+      </div>
+      <div class="subheader-actions">
+        <button class="subheader-btn" data-nav><i class="ph ph-user-plus"></i> Add Access</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Process Flow ── -->
+  <div class="process-flow">
+    <img src="assets/process-flow-strip.png" alt="Process flow: Start_001 → clientDetailsForm → validateExistingClient → showMortageInfo → End_001">
+  </div>
+
+  <!-- ── Warning Bar ── -->
+  <div class="warning-bar">
+    <i class="ph ph-warning" style="color:#F59E0B;"></i>
+    <span>Warnings</span>
+    <i class="ph ph-info"></i>
+    <strong>Node Details:</strong> underwriting
+  </div>
+
+  <!-- ── Config Tabs ── -->
+  <div class="config-tabs">
+    <div class="config-tab" data-nav>Node Config</div>
+    <div class="config-tab active">Actions</div>
+  </div>
+
+  <!-- ── Main Layout ── -->
+  <div class="main-layout">
+
+    <!-- Left Tree Nav -->
+    <div class="tree-nav">
+      <div class="tree-item" style="font-weight:600; color:#0F1114; padding: 8px 16px;"><i class="ph ph-caret-down"></i> Actions</div>
+      <div class="tree-sub">
+        <div class="tree-item active">start_Subprocess</div>
+      </div>
+    </div>
+
+    <!-- Right Content -->
+    <div class="config-content">
+
+      <div class="action-edit-title">Action Edit</div>
+      <div class="action-edit-id">ID: 888163</div>
+
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input field-input" data-field="action-name" value="start_Subprocess">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Order</label>
+        <input type="text" class="form-input field-input" data-field="action-order" value="1">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Timer expression</label>
+        <input type="text" class="form-input field-input" data-field="timer-expr" placeholder="Timer Expression">
+      </div>
+
+      <div class="form-group" style="margin-top: 8px;">
+        <select class="form-select field-select" data-field="business-rule">
+          <option selected>Business Rule</option>
+          <option>Automatic</option>
+          <option>Manual</option>
+        </select>
+      </div>
+
+      <div class="option-row">
+        <label class="option-item"><input type="radio" name="exec-mode" checked> Automatic</label>
+        <label class="option-item"><input type="radio" name="exec-mode"> Manual</label>
+      </div>
+
+      <div class="option-row">
+        <label class="option-item"><input type="radio" name="priority" checked> Mandatory</label>
+        <label class="option-item"><input type="radio" name="priority"> Optional</label>
+      </div>
+
+      <div class="option-row">
+        <label class="option-item"><input type="checkbox" class="field-input" data-field="repeatable"> Repeatable</label>
+      </div>
+
+      <div class="toggle-row-sm">
+        <span class="toggle-label-sm">Autorun Children?</span>
+        <div class="switch-sm on switch-toggle" data-field="autorun-children"></div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Business Rules -->
+      <div class="rules-title">Business Rules</div>
+
+      <div class="rule-card">
+        <div class="rule-header">
+          <div class="rule-title"><i class="ph ph-caret-down"></i> Rule 1</div>
+          <button class="rule-delete"><i class="ph ph-copy"></i></button>
+        </div>
+
+        <div class="rule-body">
+          <div class="rule-type-row">
+            <label class="option-item"><input type="radio" name="rule-type"> Custom  Rule</label>
+            <label class="option-item"><input type="radio" name="rule-type" checked> Reusable Function</label>
+          </div>
+
+          <div class="rule-field">
+            <div class="rule-field-label">Select Business Rule</div>
+            <div class="rule-select-row">
+              <select class="rule-select field-select" data-field="rule-1-select">
+                <option selected>calculateAgeFromCNP</option>
+                <option>validateLoanAmount</option>
+              </select>
+              <button class="rule-icon-btn"><i class="ph ph-arrow-square-out"></i></button>
+            </div>
+          </div>
+
+          <div class="rule-field">
+            <div class="rule-field-row">
+              <div>
+                <div class="rule-field-label">Input Mapping</div>
+                <div class="rule-field-desc">Variables sent by the process to the Function</div>
+              </div>
+              <button class="rule-gear"><i class="ph ph-gear"></i></button>
+            </div>
+          </div>
+
+          <div class="rule-field">
+            <div class="rule-field-row">
+              <div>
+                <div class="rule-field-label">Output Mapping</div>
+                <div class="rule-field-desc">Variables returned by the Function</div>
+              </div>
+              <button class="rule-gear"><i class="ph ph-gear"></i></button>
+            </div>
+          </div>
+
+          <!-- Code Editor -->
+          <div class="code-editor">
+            <div class="code-toolbar">
+              <select class="code-lang-select">
+                <option selected>JAVASCRIPT</option>
+                <option>PYTHON</option>
+              </select>
+              <button class="code-test-link">Test</button>
+              <i class="ph ph-sparkle code-sparkle"></i>
+            </div>
+          <div class="code-body">
+            <div class="code-lines">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20</div>
+            <div class="code-text" contenteditable="true" data-field="rule-1-code">(function transform(application) {
+  return {
+    creditApplication: {
+      number: 12345,  // Static value, can be dynamic if needed
+      status: "PENDING",
+      legalRepresentatives: application.client.map(client => ({
+        fullName: client.firstName + " " + client.lastName,
+        birthDetails: {
+          place: client.placeOfBirth,
+          personalId: client.personalIdentificationNumber
+        },
+      })),
+      vehicleDetails: {
+        vehicleType: client.vehicle.type,
+      },
+
+      applicationDetails: {
+        amount: application.amount,
+        branch: "main-branch-preset"
+      }
+    }
+  };
+})</div>
+          </div>
+          <div class="status-bar">
+            <i class="ph ph-info"></i> No Warnings
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="add-rule-btn"><i class="ph ph-plus-circle"></i> Add Rule</button>
+
+    </div>
+  </div>
+
+  <!-- Save Banner -->
+  <div class="save-banner">
+    <div class="save-banner-unsaved">
+      <span class="save-banner-text">Careful , you have unsaved changes!</span>
+      <div class="save-banner-actions">
+        <button class="btn-reset">Reset</button>
+        <button class="btn-save">Save Changes</button>
+      </div>
+    </div>
+    <div class="save-banner-saved">
+      <img src="assets/check-circle.svg" alt="Saved" class="saved-icon">
+      <span class="saved-text">Saved</span>
+    </div>
+  </div>
+
+  <!-- Flowpilot FAB -->
+  <div class="flowpilot-fab">
+    <img src="assets/flowpilot.svg" alt="Flowpilot">
+  </div>
+
+  <!-- ── Scripts ── -->
+  <script>
+    window.PAGE_NAV_PAGES = [
+      { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
+      { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+      { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
+      { id: 'branding', label: 'Branding', href: 'branding.html' },
+      { id: 'model-selection', label: 'Model Selection', href: 'model-selection.html' },
+      { id: 'node-config', label: 'Node Config', href: 'node-config.html' },
+    ];
+    window.PAGE_NAV_CURRENT = 'node-config';
+  </script>
+  <script src="shared/save-widget.js"></script>
+  <script src="shared/page-nav.js"></script>
+</body>
+</html>
