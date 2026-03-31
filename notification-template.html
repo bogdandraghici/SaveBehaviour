@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Template - English</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2"></script>
+  <link rel="stylesheet" href="shared/save-widget.css">
+  <link rel="stylesheet" href="shared/page-nav.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #F1F3F6;
+      min-height: 100vh;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background: #2A313A;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+    .app-header-left { display: flex; align-items: center; gap: 12px; }
+    .logo { padding: 0 2px; display: flex; align-items: center; }
+    .logo img { height: 24px; width: auto; }
+    .project-info { display: flex; align-items: center; gap: 8px; }
+    .project-icon img { width: 18px; height: 18px; border-radius: 8px; }
+    .project-name { font-weight: 700; font-size: 14px; color: #FFF; }
+    .branch-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: #0F1114; border-radius: 8px; padding: 4px 8px;
+    }
+    .branch-tags { display: flex; align-items: center; gap: 8px; }
+    .branch-dot { width: 16px; height: 16px; border-radius: 100px; background: #002D5B; border: 1px dashed #3389E0; }
+    .tag { display: inline-flex; align-items: center; padding: 0 4px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
+    .tag-main { background: rgba(0,59,119,0.3); border: 1px solid #3389E0; color: #FFF; }
+    .tag-draft { border: 1px dashed #E66119; color: #FD8949; }
+    .new-version-text { font-size: 12px; color: #FFF; opacity: 0.8; }
+    .icon-btn-dark {
+      width: 24px; height: 24px; background: #2A313A; border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .icon-btn-dark img { width: 14px; height: 14px; }
+    .submit-btn {
+      display: flex; align-items: center; gap: 4px; background: #2A313A;
+      border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; padding: 4px 8px;
+      color: #FFF; font-size: 12px; font-weight: 600; cursor: pointer; height: 24px;
+    }
+    .submit-btn img { width: 12px; height: 12px; }
+    .segmented-control {
+      display: flex; align-items: center; gap: 8px; background: #191D23;
+      border-radius: 8px; padding: 4px; height: 32px;
+    }
+    .segment {
+      display: flex; align-items: center; justify-content: center; padding: 0 16px;
+      height: 100%; border-radius: 4px; font-size: 12px; color: #FFF; cursor: pointer;
+    }
+    .segment.active {
+      background: #006BD8; font-weight: 600;
+      box-shadow: 0px 1px 4px -1px rgba(0,0,0,0.12), 0px 2px 8px -2px rgba(0,0,0,0.08);
+    }
+    .segment:not(.active) { padding: 0 8px; border-radius: 6px; }
+
+    /* ── Resource Sub-Header ── */
+    .resource-subheader {
+      background: #475263; display: flex; align-items: center;
+      gap: 24px; padding: 4px 0 4px 80px;
+    }
+    .resource-subheader-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      flex: 1; padding-right: 16px;
+    }
+    .breadcrumb-area { display: flex; align-items: center; gap: 16px; }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center; padding: 6px;
+      border: 1px solid rgba(166,176,190,0.3); border-radius: 8px; background: transparent; cursor: pointer;
+    }
+    .back-btn img, .back-btn i { width: 12px; height: 12px; color: #FFF; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .breadcrumb-dim { color: #FFF; opacity: 0.7; }
+    .breadcrumb-sep { color: #FFF; opacity: 0.5; }
+    .breadcrumb-bold { color: #FFF; font-weight: 700; }
+    .dots-btn {
+      display: flex; align-items: center; justify-content: center; padding: 6px;
+      border: 1px solid rgba(166,176,190,0.3); border-radius: 8px; background: transparent; cursor: pointer;
+    }
+    .dots-btn img { width: 12px; height: 12px; }
+
+    /* ── Page Layout ── */
+    .page-content { padding: 24px; padding-bottom: 120px; }
+
+    /* ── Title Card (ResourceHeader) ── */
+    .title-card {
+      background: #FFF; border-radius: 16px; box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
+      padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .title-left { display: flex; flex-direction: column; gap: 4px; }
+    .title-heading { font-size: 28px; font-weight: 700; line-height: 1.5; color: #000; }
+    .title-subtitle { font-size: 14px; font-weight: 400; line-height: 1.57; color: #0F1114; }
+    .title-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-test {
+      padding: 6px 12px; border: none; border-radius: 8px;
+      background: #006BD8; color: #FFF; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    /* ── Content Card ── */
+    .content-card {
+      background: #FFF; border-radius: 16px;
+      box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Email Template Section ── */
+    .section-header-block {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .section-top {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #E3E8ED;
+    }
+    .section-top-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 0;
+    }
+    .section-title { font-size: 14px; font-weight: 700; color: #000; }
+    .section-desc { font-size: 12px; line-height: 1.5; color: #475263; }
+
+    /* ── Subject Input ── */
+    .subject-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .subject-label {
+      font-size: 14px; font-weight: 600; color: #64748B;
+    }
+    .subject-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      color: #64748B;
+      border: 1px solid #E3E8ED;
+      border-radius: 8px;
+      background: #F7F8F9;
+      outline: none;
+    }
+    .subject-input::placeholder { color: #64748B; }
+
+    /* ── Visual Editor ── */
+    .editor-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .editor-toolbar-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1px solid #E3E8ED;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      background: #F7F8F9;
+    }
+
+    .editor-mode-select {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12px;
+      color: #0F1114;
+      background: #FFF;
+      border: 1px solid #E3E8ED;
+      border-radius: 8px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url('assets/caret-down.svg');
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 10px;
+      padding-right: 24px;
+      margin: 0;
+      height: 100%;
+      border-top: none;
+      border-left: none;
+      border-bottom: none;
+      border-radius: 0;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 8px;
+      flex: 1;
+    }
+    .toolbar-btn {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; border-radius: 4px;
+      cursor: pointer; color: #475263; font-size: 14px;
+    }
+    .toolbar-btn:hover { background: #E3E8ED; }
+    .toolbar-sep {
+      width: 1px; height: 20px; background: #E3E8ED; margin: 0 4px;
+    }
+    .toolbar-select {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12px;
+      color: #475263;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 4px;
+      outline: none;
+    }
+
+    .editor-body {
+      border: 1px solid #E3E8ED;
+      border-top: 1px solid #D1D1D0;
+      border-radius: 0 0 8px 8px;
+      min-height: 320px;
+      background: #F8F8F8;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .editor-row {
+      display: flex;
+      align-items: center;
+    }
+    .editor-image-placeholder {
+      background: #F8F8F8;
+      border: 1px solid #D1D1D0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    .editor-image-block {
+      height: 29px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* ── Bottom Actions ── */
+    .bottom-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+    }
+    .btn-cancel {
+      padding: 6px 12px; border: 1px solid #E3E8ED; border-radius: 8px;
+      background: #FFF; color: #006BD8; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-save {
+      padding: 6px 12px; border: none; border-radius: 8px;
+      background: #006BD8; color: #FFF; font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── App Header ── -->
+  <header class="app-header">
+    <div class="app-header-left">
+      <div class="logo">
+        <img src="assets/logo.svg" alt="Logo">
+      </div>
+      <div class="project-info">
+        <div class="project-icon">
+          <img src="assets/project-icon.svg" alt="">
+        </div>
+        <span class="project-name">[Project]  Mortgage</span>
+      </div>
+      <div class="branch-bar">
+        <div class="branch-tags">
+          <div class="branch-dot"></div>
+          <span class="tag tag-main">main</span>
+          <span class="tag tag-draft">draft</span>
+        </div>
+        <span class="new-version-text">New version</span>
+        <div class="icon-btn-dark">
+          <img src="assets/new-version-icon.svg" alt="">
+        </div>
+        <div class="submit-btn">
+          <img src="assets/submit-icon.svg" alt="">
+          <span>Submit Changes to Version</span>
+        </div>
+      </div>
+    </div>
+    <div class="segmented-control">
+      <div class="segment active">Config</div>
+      <div class="segment">Runtime</div>
+    </div>
+  </header>
+
+  <!-- ── Resource Sub-Header ── -->
+  <div class="resource-subheader">
+    <div class="resource-subheader-inner">
+      <div class="breadcrumb-area">
+        <button class="back-btn">
+          <img src="assets/arrow-left.svg" alt="Back">
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-dim">Notification Templates</span>
+          <span class="breadcrumb-sep">\</span>
+          <span class="breadcrumb-dim">Reply_With_Confirmation</span>
+          <span class="breadcrumb-sep">\</span>
+          <span class="breadcrumb-bold">English</span>
+        </div>
+      </div>
+      <button class="dots-btn">
+        <img src="assets/dots-menu.svg" alt="Menu">
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Page Content ── -->
+  <div class="page-content">
+
+    <!-- Title Card -->
+    <div class="title-card">
+      <div class="title-left">
+        <div class="title-heading">English</div>
+        <div class="title-subtitle">[notification_template_name]</div>
+      </div>
+      <div class="title-actions">
+        <button class="btn-test">Test</button>
+      </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+
+      <!-- Section Header -->
+      <div class="section-header-block">
+        <div class="section-top">
+          <div class="section-top-text">
+            <div class="section-title">Email Template</div>
+            <div class="section-desc">Create language-specific email templates using dynamic data from the Data model. Type #attributeName to insert attributes.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject Field -->
+      <div class="subject-row">
+        <label class="subject-label">Subject</label>
+        <input type="text" class="subject-input" placeholder="Enter Subject" disabled>
+      </div>
+
+      <!-- Visual Editor -->
+      <div class="editor-section">
+        <div class="editor-toolbar-wrapper">
+          <select class="editor-mode-select">
+            <option>Visual Editor</option>
+            <option>HTML</option>
+          </select>
+          <div class="editor-toolbar">
+            <button class="toolbar-btn" title="Undo"><i class="ph ph-arrow-bend-up-left"></i></button>
+            <button class="toolbar-btn" title="Redo"><i class="ph ph-arrow-bend-up-right"></i></button>
+            <span class="toolbar-sep"></span>
+            <button class="toolbar-btn" title="Bold"><i class="ph-bold ph-text-b"></i></button>
+            <button class="toolbar-btn" title="Italic"><i class="ph-bold ph-text-italic"></i></button>
+            <button class="toolbar-btn" title="Underline"><i class="ph-bold ph-text-underline"></i></button>
+            <button class="toolbar-btn" title="Strikethrough"><i class="ph-bold ph-text-strikethrough"></i></button>
+            <span class="toolbar-sep"></span>
+            <button class="toolbar-btn" title="Align Left"><i class="ph ph-text-align-left"></i></button>
+            <button class="toolbar-btn" title="Align Center"><i class="ph ph-text-align-center"></i></button>
+            <button class="toolbar-btn" title="Align Right"><i class="ph ph-text-align-right"></i></button>
+            <button class="toolbar-btn" title="Justify"><i class="ph ph-text-align-justify"></i></button>
+            <span class="toolbar-sep"></span>
+            <button class="toolbar-btn" title="Bulleted List"><i class="ph ph-list-bullets"></i></button>
+            <button class="toolbar-btn" title="Numbered List"><i class="ph ph-list-numbers"></i></button>
+            <button class="toolbar-btn" title="Checklist"><i class="ph ph-list-checks"></i></button>
+            <span class="toolbar-sep"></span>
+            <button class="toolbar-btn" title="Link"><i class="ph ph-link"></i></button>
+            <button class="toolbar-btn" title="Image"><i class="ph ph-image"></i></button>
+            <button class="toolbar-btn" title="Code"><i class="ph ph-code"></i></button>
+            <button class="toolbar-btn" title="Table"><i class="ph ph-table"></i></button>
+            <span class="toolbar-sep"></span>
+            <button class="toolbar-btn" title="Smiley"><i class="ph ph-smiley"></i></button>
+            <button class="toolbar-btn" title="Plus"><i class="ph ph-plus"></i></button>
+            <span class="toolbar-sep"></span>
+            <select class="toolbar-select">
+              <option>Style</option>
+            </select>
+            <span class="toolbar-sep"></span>
+            <select class="toolbar-select">
+              <option>Format</option>
+            </select>
+            <span class="toolbar-sep"></span>
+            <button class="toolbar-btn" title="More Options"><i class="ph ph-dots-three"></i></button>
+          </div>
+        </div>
+        <div class="editor-body" contenteditable="true">
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="bottom-actions">
+        <button class="btn-cancel">Cancel</button>
+        <button class="btn-save">Save</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Save Banner ── -->
+  <div class="save-banner">
+    <div class="save-banner-unsaved">
+      <span class="save-banner-text">Careful , you have unsaved changes!</span>
+      <div class="save-banner-actions">
+        <button class="btn-reset">Reset</button>
+        <button class="btn-save">Save Changes</button>
+      </div>
+    </div>
+    <div class="save-banner-saved">
+      <img src="assets/check-circle.svg" alt="Saved" class="saved-icon">
+      <span class="saved-text">Saved</span>
+    </div>
+  </div>
+
+  <!-- Flowpilot FAB -->
+  <div class="flowpilot-fab">
+    <img src="assets/flowpilot.svg" alt="Flowpilot">
+  </div>
+
+  <!-- ── Page Navigation ── -->
+  <script>
+    window.PAGE_NAV_PAGES = [
+      { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
+      { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
+      { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
+    ];
+    window.PAGE_NAV_CURRENT = 'notification-template';
+  </script>
+  <script src="shared/save-widget.js"></script>
+  <script src="shared/page-nav.js"></script>
+</body>
+</html>

@@ -103,7 +103,7 @@
     .main-content {
       flex: 1; background: #FFF; border-radius: 16px;
       box-shadow: 2px 2px 24px 0 rgba(22,52,98,0.08);
-      margin: 16px 24px 120px 16px;
+      margin: 16px 24px 120px 24px;
       display: flex; flex-direction: column; overflow: hidden;
     }
 
@@ -127,12 +127,18 @@
       font-size: 14px; font-weight: 600; cursor: pointer;
     }
 
+    /* ── Editor Wrapper ── */
+    .editor-wrap {
+      flex: 1; display: flex; flex-direction: column;
+      margin: 0 24px 24px; border: 1px solid #E3E8ED;
+      border-radius: 8px; overflow: hidden;
+    }
+
     /* ── Toolbar ── */
     .toolbar {
       display: flex; align-items: center; gap: 8px;
       padding: 3px 7px; height: 42px;
-      background: #F7F8F9; border: 1px solid #E3E8ED; border-left: none; border-right: none;
-      border-radius: 0;
+      background: #F7F8F9; border-bottom: 1px solid #E3E8ED;
     }
     .toolbar-select {
       font-family: 'Open Sans', sans-serif; font-size: 12px; color: #1D232C;
@@ -146,7 +152,10 @@
       background: #FFF; display: flex; align-items: center; justify-content: center;
       cursor: pointer; color: #FEB913; font-size: 16px;
     }
-    .toolbar-separator { width: 16px; }
+    .format-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-bottom: 1px solid #E3E8ED;
+    }
     .format-group { display: flex; align-items: center; gap: 8px; }
     .format-label {
       font-size: 12px; color: #0F1114; display: flex; align-items: center; gap: 4px;
@@ -164,8 +173,7 @@
     /* ── Code Editor ── */
     .code-area {
       flex: 1; display: flex; flex-direction: column;
-      border: 1px solid #E3E8ED; border-top: none;
-      border-radius: 0 0 8px 8px; overflow: hidden;
+      overflow: hidden;
     }
     .code-signature {
       padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
@@ -263,7 +271,7 @@
     <!-- Left Nav -->
     <div class="left-nav">
       <div class="nav-icon active"><i class="ph ph-code-simple"></i></div>
-      <div class="nav-icon"><i class="ph ph-clipboard-text"></i></div>
+      <div class="nav-icon"><i class="ph ph-database"></i></div>
     </div>
 
     <!-- Main Content -->
@@ -276,10 +284,11 @@
         </div>
         <div class="title-actions">
           <button class="btn-test" data-nav>Test</button>
-          <button class="btn-page-save" data-nav>Save</button>
         </div>
       </div>
 
+      <!-- Editor Wrapper -->
+      <div class="editor-wrap">
       <!-- Toolbar -->
       <div class="toolbar">
         <select class="toolbar-select field-select">
@@ -287,7 +296,10 @@
           <option>PYTHON</option>
         </select>
         <button class="toolbar-icon-btn"><i class="ph ph-sparkle"></i></button>
-        <div class="toolbar-separator"></div>
+      </div>
+
+      <!-- Format Row -->
+      <div class="format-row">
         <div class="format-group">
           <span class="format-label">Input Format <i class="ph ph-info"></i></span>
           <select class="format-select field-select">
@@ -331,6 +343,7 @@
           <i class="ph ph-info"></i> No Warnings
         </div>
       </div>
+      </div>
     </div>
   </div>
 
@@ -369,6 +382,7 @@
       { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
       { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
       { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
     ];
     window.PAGE_NAV_CURRENT = 'functions';
   </script>

@@ -128,8 +128,29 @@ The save widget auto-discovers these selectors:
 - `.field-select` — select dropdowns
 - `.field-input-with-suffix input` — inputs inside a suffix wrapper
 - `.switch-toggle` — toggle switches (must toggle `.on` class on click)
+- `[contenteditable="true"]` — contenteditable elements (e.g. code editors)
 
-Use `data-field="unique-key"` for explicit field identity, or the script falls back to the nearest `.field-label` / `.switch-label` text.
+#### Field identity and `data-field`
+
+The save widget snapshots every tracked element's value on page load and compares on each change. For reset to work correctly, each element needs a **stable, unique key**.
+
+The key is resolved in this order:
+1. `data-field="unique-key"` attribute (preferred)
+2. Text content of the nearest `.field-label` or `.switch-label` ancestor
+3. `name` attribute
+4. `placeholder` attribute
+5. Random fallback (reset will not work)
+
+**Always add `data-field` when elements lack a unique label**, especially:
+- **Table cells** — inputs inside `<td>` have no label ancestor. Use a row+column convention: `data-field="r1-name"`, `data-field="r1-type"`, etc.
+- **Repeated patterns** — filter rows, projection rows, sort rows. Use section+index: `data-field="f1-field"`, `data-field="f1-op"`, `data-field="f1-value"`, etc.
+- **Contenteditable elements** — keyed by `ce:` + `data-field` or `className`.
+
+Without stable keys, the snapshot cannot match elements on reset, and changed values will not revert.
+
+#### Contenteditable support
+
+Elements with `contenteditable="true"` are tracked by their `textContent`. On reset, `textContent` is restored to the snapshot. On save, the current content becomes the new baseline.
 
 ### 5. Mark navigation elements
 

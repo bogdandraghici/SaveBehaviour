@@ -362,7 +362,7 @@
       </div>
       <div class="title-actions">
         <button class="btn-test" data-nav>Test</button>
-        <button class="btn-page-save" data-nav>Save</button>
+
       </div>
     </div>
 
@@ -391,56 +391,56 @@
           </thead>
           <tbody>
             <tr>
-              <td><input class="cell-input field-input" value="startDate"></td>
+              <td><input class="cell-input field-input" data-field="r1-name" value="startDate"></td>
               <td>
-                <select class="cell-select field-select">
+                <select class="cell-select field-select" data-field="r1-type">
                   <option selected>Date</option>
                   <option>String</option>
                   <option>Number</option>
                 </select>
               </td>
-              <td><input class="cell-input field-input" value="11.01.2020"></td>
-              <td><input class="cell-input field-input" value="client first name"></td>
+              <td><input class="cell-input field-input" data-field="r1-default" value="11.01.2020"></td>
+              <td><input class="cell-input field-input" data-field="r1-desc" value="client first name"></td>
               <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
             <tr>
-              <td><input class="cell-input field-input" value="param2"></td>
+              <td><input class="cell-input field-input" data-field="r2-name" value="param2"></td>
               <td>
-                <select class="cell-select field-select">
+                <select class="cell-select field-select" data-field="r2-type">
                   <option>Date</option>
                   <option selected>String</option>
                   <option>Number</option>
                 </select>
               </td>
-              <td><input class="cell-input field-input" value="Doe"></td>
-              <td><input class="cell-input field-input" value="client last name"></td>
+              <td><input class="cell-input field-input" data-field="r2-default" value="Doe"></td>
+              <td><input class="cell-input field-input" data-field="r2-desc" value="client last name"></td>
               <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
             <tr>
-              <td><input class="cell-input field-input" value="param3"></td>
+              <td><input class="cell-input field-input" data-field="r3-name" value="param3"></td>
               <td>
-                <select class="cell-select field-select">
+                <select class="cell-select field-select" data-field="r3-type">
                   <option>Date</option>
                   <option>String</option>
                   <option selected>Number</option>
                 </select>
               </td>
-              <td><input class="cell-input field-input" value="25"></td>
-              <td><input class="cell-input field-input" value="client age"></td>
+              <td><input class="cell-input field-input" data-field="r3-default" value="25"></td>
+              <td><input class="cell-input field-input" data-field="r3-desc" value="client age"></td>
               <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
             <tr>
-              <td><input class="cell-input field-input" value="param4"></td>
+              <td><input class="cell-input field-input" data-field="r4-name" value="param4"></td>
               <td>
-                <select class="cell-select field-select">
+                <select class="cell-select field-select" data-field="r4-type">
                   <option>Date</option>
                   <option>String</option>
                   <option>Number</option>
                   <option selected>Array (number)</option>
                 </select>
               </td>
-              <td><input class="cell-input field-input" value="25"></td>
-              <td><input class="cell-input field-input" value="client age"></td>
+              <td><input class="cell-input field-input" data-field="r4-default" value="25"></td>
+              <td><input class="cell-input field-input" data-field="r4-desc" value="client age"></td>
               <td><button class="row-delete"><i class="ph ph-trash-simple"></i></button></td>
             </tr>
           </tbody>
@@ -463,40 +463,40 @@
           <div class="qa-group">
             <div class="filter-row">
               <div class="qa-field-with-suffix" style="flex:1">
-                <input class="field-input" value="client.firstName" style="border:none;outline:none;font-family:'Open Sans',sans-serif;font-size:13px;color:#0F1114;flex:1;padding:0;background:transparent;">
+                <input class="field-input" data-field="f1-field" value="client.firstName" style="border:none;outline:none;font-family:'Open Sans',sans-serif;font-size:13px;color:#0F1114;flex:1;padding:0;background:transparent;">
                 <span class="suffix" style="font-size:12px;color:#94A3B8;margin-left:8px;">string</span>
               </div>
-              <select class="qa-select medium field-select">
+              <select class="qa-select medium field-select" data-field="f1-op">
                 <option selected>Contains</option>
                 <option>Equals</option>
               </select>
               <div class="qa-field-with-suffix">
-                <input class="field-input" value="Popescu" style="border:none;outline:none;font-family:'Open Sans',sans-serif;font-size:13px;color:#0F1114;flex:1;padding:0;background:transparent;">
+                <input class="field-input" data-field="f1-value" value="Popescu" style="border:none;outline:none;font-family:'Open Sans',sans-serif;font-size:13px;color:#0F1114;flex:1;padding:0;background:transparent;">
                 <span class="suffix" style="font-size:12px;color:#94A3B8;margin-left:8px;">string</span>
               </div>
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
             <div class="filter-row">
-              <select class="qa-and-select field-select">
+              <select class="qa-and-select field-select" data-field="f2-join">
                 <option selected>And</option>
                 <option>Or</option>
               </select>
-              <input class="qa-field wide field-input" value="client.clientDateOfBirth">
-              <select class="qa-select medium field-select">
+              <input class="qa-field wide field-input" data-field="f2-field" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select" data-field="f2-op">
                 <option selected>Greater than</option>
                 <option>Less than</option>
               </select>
-              <input class="qa-field field-input" value="${startDate}">
+              <input class="qa-field field-input" data-field="f2-value" value="${startDate}">
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
             <div class="filter-row">
               <span class="qa-and-text">And</span>
-              <input class="qa-field wide field-input" value="client.clientDateOfBirth">
-              <select class="qa-select medium field-select">
+              <input class="qa-field wide field-input" data-field="f3-field" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select" data-field="f3-op">
                 <option>Greater than</option>
                 <option selected>Lower than</option>
               </select>
-              <input class="qa-field field-input" value="${endDate}">
+              <input class="qa-field field-input" data-field="f3-value" value="${endDate}">
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
             <div class="filter-footer">
@@ -512,16 +512,16 @@
           <span class="qa-label">Projection</span>
           <div class="qa-group">
             <div class="kv-row">
-              <input class="kv-field field-input" value="client.clientDateOfBirth">
-              <select class="qa-select medium field-select">
+              <input class="kv-field field-input" data-field="p1-key" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select" data-field="p1-mode">
                 <option selected>Include</option>
                 <option>Exclude</option>
               </select>
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
             <div class="kv-row">
-              <input class="kv-field field-input" value="client.firstName">
-              <select class="qa-select medium field-select">
+              <input class="kv-field field-input" data-field="p2-key" value="client.firstName">
+              <select class="qa-select medium field-select" data-field="p2-mode">
                 <option selected>Include</option>
                 <option>Exclude</option>
               </select>
@@ -536,16 +536,16 @@
           <span class="qa-label">Sort</span>
           <div class="qa-group">
             <div class="kv-row">
-              <input class="kv-field field-input" value="client.clientDateOfBirth">
-              <select class="qa-select medium field-select">
+              <input class="kv-field field-input" data-field="s1-key" value="client.clientDateOfBirth">
+              <select class="qa-select medium field-select" data-field="s1-dir">
                 <option selected>Ascending</option>
                 <option>Descending</option>
               </select>
               <button class="trash-btn"><i class="ph ph-trash-simple"></i></button>
             </div>
             <div class="kv-row">
-              <input class="kv-field field-input" value="client.firstName">
-              <select class="qa-select medium field-select">
+              <input class="kv-field field-input" data-field="s2-key" value="client.firstName">
+              <select class="qa-select medium field-select" data-field="s2-dir">
                 <option>Ascending</option>
                 <option selected>Descending</option>
               </select>
@@ -585,6 +585,7 @@
       { id: 'email-connections', label: 'Email Connections', href: 'index.html' },
       { id: 'database-query', label: 'Database Query', href: 'database-query.html' },
       { id: 'functions', label: 'Functions', href: 'functions.html' },
+      { id: 'notification-template', label: 'Notification Template', href: 'notification-template.html' },
     ];
     window.PAGE_NAV_CURRENT = 'database-query';
   </script>
