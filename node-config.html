@@ -551,5 +551,34 @@
   </script>
   <script src="shared/save-widget.js"></script>
   <script src="shared/page-nav.js"></script>
+  <script>
+    (function () {
+      var banner = document.querySelector('.save-banner');
+      var radios = document.querySelectorAll('input[type="radio"]');
+      var originals = {};
+      radios.forEach(function (r) {
+        if (r.checked) originals[r.name] = r.nextSibling.textContent.trim();
+      });
+      function showBanner() {
+        banner.classList.remove('hiding');
+        void banner.offsetHeight;
+        banner.classList.add('visible');
+      }
+      radios.forEach(function (r) {
+        r.addEventListener('change', function () { showBanner(); });
+      });
+      banner.querySelector('.btn-reset').addEventListener('click', function () {
+        radios.forEach(function (r) {
+          var label = r.nextSibling.textContent.trim();
+          r.checked = (originals[r.name] === label);
+        });
+      });
+      banner.querySelector('.btn-save').addEventListener('click', function () {
+        radios.forEach(function (r) {
+          if (r.checked) originals[r.name] = r.nextSibling.textContent.trim();
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
